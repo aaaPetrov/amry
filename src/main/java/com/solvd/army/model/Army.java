@@ -2,16 +2,16 @@ package com.solvd.army;
 
 import java.util.List;
 
-public abstract class Army {
+public class Army {
 
     private final String country;
     private List<MilitaryUnit> militaryUnits;
 
-    protected Army(String country) {
+    public Army(String country) {
         this.country = country;
     }
 
-    protected Army(String country, List<MilitaryUnit> militaryUnits) {
+    public Army(String country, List<MilitaryUnit> militaryUnits) {
         this.country = country;
         this.militaryUnits = militaryUnits;
     }

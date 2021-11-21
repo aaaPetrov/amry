@@ -1,17 +1,17 @@
-package com.solvd.army;
+package com.solvd.army.model.soldier;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-public class Human {
+public abstract class Human {
 
     private String firstName;
     private String lastName;
     private int age;
     private LocalDate birthday;
 
-    public Human(String firstName, String lastName, LocalDate birthday) {
+    protected Human(String firstName, String lastName, LocalDate birthday) {
         int age = (int) ChronoUnit.YEARS.between(birthday, LocalDate.now());
         this.firstName = firstName;
         this.lastName = lastName;
