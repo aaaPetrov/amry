@@ -1,4 +1,10 @@
-package com.solvd.army;
+package com.solvd.army.model;
+
+import com.solvd.army.model.resources.Ammo;
+import com.solvd.army.model.resources.Plane;
+import com.solvd.army.model.resources.Tank;
+import com.solvd.army.model.resources.Weapon;
+import com.solvd.army.model.soldier.Soldier;
 
 import java.util.List;
 

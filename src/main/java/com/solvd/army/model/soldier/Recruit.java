@@ -4,14 +4,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-public abstract class Human {
+public abstract class Recruit {
 
     private String firstName;
     private String lastName;
     private int age;
     private LocalDate birthday;
 
-    protected Human(String firstName, String lastName, LocalDate birthday) {
+    protected Recruit(String firstName, String lastName, LocalDate birthday) {
         int age = (int) ChronoUnit.YEARS.between(birthday, LocalDate.now());
         this.firstName = firstName;
         this.lastName = lastName;

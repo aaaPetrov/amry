@@ -1,4 +1,4 @@
-package com.solvd.army;
+package com.solvd.army.model.resources;
 
 public class Weapon {
 
@@ -11,7 +11,7 @@ public class Weapon {
     }
 
     public enum WeaponType {
-        P_APS("P.APS"), P_SPS("P.SPS"),P_MR_444("P.MR-444"), P_MP_448("P.MP-448"), P_P_96("P.P-96"),
+        P_APS("P.APS"), P_SPS("P.SPS"), P_MR_444("P.MR-444"), P_MP_448("P.MP-448"), P_P_96("P.P-96"),
         A_AKM("A.AKM"), A_AK_47("A.AK-47"), A_AK_74M("A.AK-74M"), A_9A91("A.9A91"), A_A_91M("A.A-91M"),
         SR_SVD("SR.SVD"), SR_SVY_AS("SR.SVY_AS"), SR_SV_98("SR.SV-98"), SR_OSV_96("SR.OSV-96"), SR_ASVK("SR.ASVK"),
         MG_RPK("MG.RPK"), MG_PK("MG.PK"), MG_PKM("MG.PKM"), MG_PKMT("MG.PKMT"), MG_PKMB("MG.PKMB"), MG_KPV("MG.KPV"),

@@ -1,4 +1,4 @@
-package com.solvd.army;
+package com.solvd.army.model;
 
 import java.util.List;
 

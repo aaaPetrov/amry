@@ -1,4 +1,4 @@
-package com.solvd.army;
+package com.solvd.army.model;
 
 public class Location {
 

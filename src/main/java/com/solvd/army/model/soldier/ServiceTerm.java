@@ -1,11 +1,11 @@
-package com.solvd.army;
+package com.solvd.army.model.soldier;
 
 import java.time.LocalDate;
 
 public class ServiceTerm {
 
-    LocalDate entered;
-    LocalDate end;
+    private LocalDate entered;
+    private LocalDate end;
 
     public ServiceTerm(LocalDate entered, LocalDate end) {
         this.entered = entered;

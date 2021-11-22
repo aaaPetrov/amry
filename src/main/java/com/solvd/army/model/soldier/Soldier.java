@@ -1,8 +1,8 @@
-package com.solvd.army;
+package com.solvd.army.model.soldier;
 
 import java.time.LocalDate;
 
-public class Soldier extends Human {
+public class Soldier extends Recruit {
 
     public static int count;
 
