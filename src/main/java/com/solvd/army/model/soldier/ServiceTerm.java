@@ -4,32 +4,33 @@ import java.time.LocalDate;
 
 public class ServiceTerm {
 
-    private LocalDate entered;
-    private LocalDate end;
+    private LocalDate enteredAt;
+    private LocalDate endOn;
 
-    public ServiceTerm(LocalDate entered, LocalDate end) {
-        this.entered = entered;
-        this.end = end;
+    public ServiceTerm(LocalDate enteredAt, LocalDate endOn) {
+        this.enteredAt = enteredAt;
+        this.endOn = endOn;
     }
 
-    public ServiceTerm(LocalDate entered, int serviceTermInYears) {
-        this.entered = entered;
-        this.end = entered.plusYears(serviceTermInYears);
+    public ServiceTerm(LocalDate enteredAt, int serviceTermInYears) {
+        this.enteredAt = enteredAt;
+        this.endOn = enteredAt.plusYears(serviceTermInYears);
     }
 
     public LocalDate getEntered() {
-        return entered;
+        return enteredAt;
     }
 
-    public void setEntered(LocalDate entered) {
-        this.entered = entered;
+    public void setEntered(LocalDate enteredAt) {
+        this.enteredAt = enteredAt;
     }
 
     public LocalDate getEnd() {
-        return end;
+        return endOn;
     }
 
-    public void setEnd(LocalDate end) {
-        this.end = end;
+    public void setEnd(LocalDate endOn) {
+        this.endOn = endOn;
     }
+
 }
