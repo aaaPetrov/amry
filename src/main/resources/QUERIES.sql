@@ -1,7 +1,136 @@
-#SELECT
-
 # Используем базу данных army.
 use army;
+
+#UPDATE
+
+update military_unit_ammo set amount = 18000 where ammo_id like 3 and military_unit_id like 3;
+
+update military_unit_weapon set amount = 32 where weapon_id like 3 and military_unit_id like 1;
+
+update recruits set first_name = 'Vladimir', last_name = 'Voitick' where first_name like 'Vova';
+
+update soldiers set end_of_service = date_sub(end_of_service, interval 2 year) where recruit_id = (select id from recruits where first_name like 'Artem' and last_name like 'Petrov');
+
+update military_units set longitude = 60.190921, latitude = 34.305384 where name like "russian_unit_5";
+
+update military_units set name = "War is very bad" where army_id = (select id from armies where country = 'Belorus');
+
+update military_units set name = "belorusian_unit_1" where id = 6;
+update military_units set name = "belorusian_unit_2" where id = 7;
+update military_units set name = "belorusian_unit_3" where id = 8;
+
+update recruits set birthday = str_to_date('29-10-1995', '%d-%m-%Y') where first_name like 'Gleb' and last_name like 'Karamzin';
+
+#DELETE
+
+#FIRST DELETE
+insert into recruits(first_name, last_name, birthday)
+values('Vlad', 'Ostroverhov', str_to_date('22-02-1992', '%d-%m-%Y'));
+insert into soldiers(recruit_id, rank_id, military_unit_id, entered_the_service, end_of_service)
+values(27, 1, 1, now(), date_add(now(), interval 1 year));
+
+select entered_the_serivce, end_of_service from soldiers where recruit_id = (select id from recruits where first_name like 'Vlad' and last_name like 'Ostroverhov');
+
+delete from soldiers where recruit_id = (select id from recruits where first_name like 'Vlad' and last_name like 'Ostroverhov');
+
+select entered_the_serivce, end_of_service from soldiers where recruit_id = (select id from recruits where first_name like 'Vlad' and last_name like 'Ostroverhov');
+
+#SECOND DELETE
+select id from recruits where birthday like str_to_date('22-02-1992', '%d-%m-%Y');
+
+delete from recruits where  id = 27;
+
+select id from recruits where birthday like str_to_date('22-02-1992', '%d-%m-%Y');
+
+#THIRD DELETE
+insert into armies(country) value('123');
+select * from armies;
+
+delete from armies where country like '1%';
+
+select * from armies;
+
+#FOURTH DELETE
+insert into military_units(army_id, name, longitude, latitude)
+value(1, 'russian_unit_6', 60.111111, 34.111111);
+
+select * from military_units where substring_index(name, '_', 1) like 'russian';
+
+delete from military_units where longitude like 60.111111;
+
+select * from military_units where substring_index(name, '_', 1) like 'russian';
+
+#FIFTH DELETE
+alter table weapons modify column type enum (
+'P.APS', 'P.SPS', 'P.MR-444', 'P.MP-448', 'P.P-96', 'A.AKM', 'A.AK-47', 'A.AK-74M', 'A.9A91', 'A.A-91M',
+'SR.SVD', 'SR.SVY_AS', 'SR.SV-98', 'SR.OSV-96', 'SR.ASVK', 'MG.RPK', 'MG.PK', 'MG.PKM', 'MG.PKMT',
+'MG.PKMB', 'MG.KPV', 'GL.GP-25', 'GL.6G30', 'GL.GM-94', 'GL.RMG', 'GL.RPG26', 'GL.RPG32', 'TEST1', 'TEST2'
+);
+
+insert into weapons(type)
+values('TEST1'), ('TEST2');
+
+select type from weapons;
+
+delete from weapons where type like 'TEST1' or type like 'TEST2';
+
+select type from weapons;
+
+alter table weapons modify column type enum (
+'P.APS', 'P.SPS', 'P.MR-444', 'P.MP-448', 'P.P-96', 'A.AKM', 'A.AK-47', 'A.AK-74M', 'A.9A91', 'A.A-91M',
+'SR.SVD', 'SR.SVY_AS', 'SR.SV-98', 'SR.OSV-96', 'SR.ASVK', 'MG.RPK', 'MG.PK', 'MG.PKM', 'MG.PKMT',
+'MG.PKMB', 'MG.KPV', 'GL.GP-25', 'GL.6G30', 'GL.GM-94', 'GL.RMG', 'GL.RPG26', 'GL.RPG32'
+);
+
+#SIXTH DELETE
+alter table planes modify column type enum (
+'MiG-35', 'Cy-57', 'Ty-160', 'Cy-25', 'Cy-35C', 'Cy-47',
+'Ty-22M3', 'An-124', 'B-52', 'TEST_PLANE1'
+);
+
+insert into planes(type)
+values('TEST_PLANE1');
+
+select type from planes;
+
+delete from planes where type like 'TEST_PLANE1';
+
+select type from planes;
+
+alter table planes modify column type enum (
+'MiG-35', 'Cy-57', 'Ty-160', 'Cy-25', 'Cy-35C', 'Cy-47',
+'Ty-22M3', 'An-124', 'B-52'
+);
+
+#SEVENTH, EIGHTH, NINTH, TENTH DELETE
+# Я не буду выполнять следующие delete, потому что они удалят каскадом
+# слишком много значений из связанных таблиц и мне потом придётся удалять в правильном
+# порядке таблицы, потом их заново создавать и заполнять(если не удалять таблицы, то
+# во многих инсёртах придётся исправлять айдишники). Поэтому я просто напишу, что делает каждый.
+
+# Удалит все строки в таблице ranks, так же каскадом удалятся все строки в soldiers, т.к. там foreign_key.
+delete from ranks;
+
+# Удалит все строки в таблице ranks, так же каскадом удалятся все строки в soldiers, т.к. там foreign_key.
+delete from recruits;
+
+# Удалит все строки в таблице military_unit, так же каскадом удалит все строки в таблицах
+# soldiers, military_unit_ammo, military_unit_plane, military_unit_tank, military_unit_weapon
+# т.к. там foreign key
+delete from military_unit;
+
+# Удалит строки в таблице armies где столбец country равен Ukrain, так же каскадом строки в military_unit,
+# где foreign key(army_id) будет равен id удалённых строк из таблицы armies, 
+# и дальше каскадом по такой же логике удалит строки в таблицах soldiers, military_unit_ammo, military_unit_plane, military_unit_tank, military_unit_weapon
+delete from armies where country like 'Ukrain';
+
+# Удалит все строки в таблице armies, так же каскадом удалятся все строки в military_unit, т.к. там foreign_key,
+# и дальше каскадом удалит все строки в таблицах soldiers, military_unit_ammo, military_unit_plane, military_unit_tank, military_unit_weapon
+delete from armies;
+
+
+#SELECT
+
 
 # Выводим все столбцы и строки из таблицы recruits.
 select * from recruits;
