@@ -8,7 +8,7 @@ import java.util.List;
 
 public class SoldierServiceImpl implements ISoldierService {
 
-    private SoldierRepositoryImpl soldierRepository;
+    private final SoldierRepositoryImpl soldierRepository;
 
     public SoldierServiceImpl() {
         soldierRepository = new SoldierRepositoryImpl();

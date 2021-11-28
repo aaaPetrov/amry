@@ -27,8 +27,6 @@ public final class Config {
             Properties property = new Properties();
             property.load(inputStream);
             value = property.getProperty(forVariable);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

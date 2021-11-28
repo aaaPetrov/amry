@@ -13,17 +13,15 @@ public class ConnectionPool {
     public volatile static ConnectionPool CONNECTION_POOL;
 
     private final List<Connection> connections;
-    private final int size;
 
     static {
         CONNECTION_POOL = getInstance(5);
     }
 
     private ConnectionPool(int sizeOfPool) {
-        this.size = sizeOfPool;
         this.connections = new ArrayList<>();
         classForName(Config.JDBC_DRIVER);
-        IntStream.range(0, this.size).boxed()
+        IntStream.range(0, sizeOfPool).boxed()
                 .forEach(index -> {
                     Connection connection = getConnection(Config.URL, Config.USER, Config.PASSWORD);
                     this.connections.add(connection);
@@ -39,7 +37,7 @@ public class ConnectionPool {
                     e.printStackTrace();
                 }
             }
-            return this.connections.remove(connections.size()-1);
+            return this.connections.remove(connections.size() - 1);
         }
     }
 

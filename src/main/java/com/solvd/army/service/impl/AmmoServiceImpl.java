@@ -1,6 +1,5 @@
 package com.solvd.army.service.impl;
 
-import com.solvd.army.domain.MilitaryUnit;
 import com.solvd.army.domain.resources.Ammo;
 import com.solvd.army.persistence.impl.AmmoRepositoryImpl;
 import com.solvd.army.service.IAmmoService;
@@ -9,7 +8,7 @@ import java.util.List;
 
 public class AmmoServiceImpl implements IAmmoService {
 
-    private AmmoRepositoryImpl ammoRepository;
+    private final AmmoRepositoryImpl ammoRepository;
 
     public AmmoServiceImpl() {
         ammoRepository = new AmmoRepositoryImpl();
@@ -29,7 +28,7 @@ public class AmmoServiceImpl implements IAmmoService {
 
     @Override
     public List<Ammo> select(String militaryUnitName) {
-        return  ammoRepository.select(militaryUnitName);
+        return ammoRepository.select(militaryUnitName);
     }
 
 }

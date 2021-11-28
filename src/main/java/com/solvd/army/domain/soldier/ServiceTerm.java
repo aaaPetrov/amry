@@ -1,6 +1,5 @@
 package com.solvd.army.domain.soldier;
 
-import com.solvd.army.domain.Location;
 
 import java.time.LocalDate;
 
@@ -40,10 +39,10 @@ public class ServiceTerm {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == this) {
+        if (obj == this) {
             return true;
         }
-        if(obj == null || obj.getClass() != this.getClass()) {
+        if (obj == null || obj.getClass() != this.getClass()) {
             return false;
         }
         ServiceTerm serviceTerm = (ServiceTerm) obj;

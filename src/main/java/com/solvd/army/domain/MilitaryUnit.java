@@ -99,14 +99,14 @@ public class MilitaryUnit {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == this) {
+        if (obj == this) {
             return true;
         }
-        if(obj == null || obj.getClass() != this.getClass()) {
+        if (obj == null || obj.getClass() != this.getClass()) {
             return false;
         }
         MilitaryUnit militaryUnit = (MilitaryUnit) obj;
-        if(militaryUnit.getAmmunition().size() != this.getAmmunition().size() || militaryUnit.getPlanes().size() != this.getPlanes().size()
+        if (militaryUnit.getAmmunition().size() != this.getAmmunition().size() || militaryUnit.getPlanes().size() != this.getPlanes().size()
                 || militaryUnit.getTanks().size() != this.getTanks().size() || militaryUnit.getWeapons().size() != militaryUnit.getWeapons().size()
                 || militaryUnit.getSoldiers().size() != this.getSoldiers().size()) {
             return false;
@@ -116,70 +116,65 @@ public class MilitaryUnit {
 
         int counter = 0;
         boolean result1 = false;
-        for(int i = 0; i < militaryUnit.getSoldiers().size(); i++) {
-            if(militaryUnit.getSoldiers().get(i).equals(this.getSoldiers().get(i))) {
+        for (int i = 0; i < militaryUnit.getSoldiers().size(); i++) {
+            if (militaryUnit.getSoldiers().get(i).equals(this.getSoldiers().get(i))) {
                 counter++;
-                if(counter == militaryUnit.getSoldiers().size()) {
+                if (counter == militaryUnit.getSoldiers().size()) {
                     result1 = true;
                 }
-            }
-            else {
+            } else {
                 result1 = false;
             }
         }
 
         counter = 0;
         boolean result2 = false;
-        for(int i = 0; i < militaryUnit.getTanks().size(); i++) {
-            if(militaryUnit.getTanks().get(i).equals(this.getTanks().get(i))) {
+        for (int i = 0; i < militaryUnit.getTanks().size(); i++) {
+            if (militaryUnit.getTanks().get(i).equals(this.getTanks().get(i))) {
                 counter++;
-                if(counter == militaryUnit.getTanks().size()) {
+                if (counter == militaryUnit.getTanks().size()) {
                     result2 = true;
                 }
-            }
-            else {
+            } else {
                 result2 = false;
             }
         }
 
         counter = 0;
         boolean result3 = false;
-        for(int i = 0; i < militaryUnit.getWeapons().size(); i++) {
-            if(militaryUnit.getWeapons().get(i).equals(this.getWeapons().get(i))) {
+        for (int i = 0; i < militaryUnit.getWeapons().size(); i++) {
+            if (militaryUnit.getWeapons().get(i).equals(this.getWeapons().get(i))) {
                 counter++;
-                if(counter == militaryUnit.getWeapons().size()) {
+                if (counter == militaryUnit.getWeapons().size()) {
                     result3 = true;
                 }
-            }
-            else {
+            } else {
                 result3 = false;
             }
         }
 
         counter = 0;
         boolean result4 = false;
-        for(int i = 0; i < militaryUnit.getPlanes().size(); i++) {
-            if(militaryUnit.getPlanes().get(i).equals(this.getPlanes().get(i))) {
+        for (int i = 0; i < militaryUnit.getPlanes().size(); i++) {
+            if (militaryUnit.getPlanes().get(i).equals(this.getPlanes().get(i))) {
                 counter++;
-                if(counter == militaryUnit.getPlanes().size()) {
+                if (counter == militaryUnit.getPlanes().size()) {
                     result4 = true;
                 }
-            }
-            else {
+            } else {
                 result4 = false;
             }
         }
 
         counter = 0;
         boolean result5 = false;
-        for(int i = 0; i < militaryUnit.getAmmunition().size(); i++) {
-            if(militaryUnit.getAmmunition().get(i).equals(this.getAmmunition().get(i))) {
+        for (int i = 0; i < militaryUnit.getAmmunition().size(); i++) {
+            if (militaryUnit.getAmmunition().get(i).equals(this.getAmmunition().get(i))) {
                 counter++;
-                if(counter == militaryUnit.getAmmunition().size()) {
+                if (counter == militaryUnit.getAmmunition().size()) {
                     result5 = true;
                 }
-            }
-            else {
+            } else {
                 result5 = false;
             }
         }

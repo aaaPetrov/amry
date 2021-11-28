@@ -1,7 +1,6 @@
 package com.solvd.army.persistence.impl;
 
 import com.solvd.army.domain.MilitaryUnit;
-import com.solvd.army.domain.resources.Ammo;
 import com.solvd.army.domain.resources.Plane;
 import com.solvd.army.persistence.ConnectionPool;
 import com.solvd.army.persistence.IPlaneRepository;
@@ -21,11 +20,11 @@ public class PlaneRepositoryImpl implements IPlaneRepository {
     public List<Plane> select(String militaryUnitName) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         List<Plane> planes = new ArrayList<>();
-        try(PreparedStatement preparedStatement = connection.prepareStatement(SQL_COMMAND)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_COMMAND)) {
             preparedStatement.setString(1, militaryUnitName);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 Plane newPlane = new Plane();
                 Plane.PlaneType planeType = planeTypeByString(resultSet.getString("type"));
                 newPlane.setPlaneType(planeType);
@@ -45,14 +44,14 @@ public class PlaneRepositoryImpl implements IPlaneRepository {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommandSelect = "select plane_id from military_unit_plane where military_unit_id = ?;";
         String sqlCommandUpdate = "update military_unit_plane set plane_id = ?, amount = ? where military_unit_id = ? and plane_id = ?;";
-        try(PreparedStatement preparedStatementSelect = connection.prepareStatement(sqlCommandSelect);
-            PreparedStatement preparedStatementUpdate = connection.prepareStatement(sqlCommandUpdate)) {
+        try (PreparedStatement preparedStatementSelect = connection.prepareStatement(sqlCommandSelect);
+             PreparedStatement preparedStatementUpdate = connection.prepareStatement(sqlCommandUpdate)) {
 
-            preparedStatementSelect.setLong(1,militaryUnitId);
+            preparedStatementSelect.setLong(1, militaryUnitId);
             ResultSet resultSet = preparedStatementSelect.executeQuery();
 
             int i = 0;
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 preparedStatementUpdate.setLong(1, plane.get(i).getPlaneType().getPlaneId());
                 preparedStatementUpdate.setInt(2, plane.get(i).getAmount());
                 preparedStatementUpdate.setLong(3, militaryUnitId);
@@ -60,7 +59,7 @@ public class PlaneRepositoryImpl implements IPlaneRepository {
                 preparedStatementUpdate.executeUpdate();
                 i++;
             }
-        } catch(SQLException exception) {
+        } catch (SQLException exception) {
             exception.printStackTrace();
         } finally {
             ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
@@ -71,12 +70,12 @@ public class PlaneRepositoryImpl implements IPlaneRepository {
     public void insert(Plane plane, Long militaryUnitId) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommand = "insert into military_unit_plane(plane_id, military_unit_id, amount) value(?, ?, ?);";
-        try(PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand)) {
             preparedStatement.setLong(1, plane.getPlaneType().getPlaneId());
             preparedStatement.setLong(2, militaryUnitId);
             preparedStatement.setLong(3, plane.getAmount());
             preparedStatement.executeUpdate();
-        } catch(SQLException exception) {
+        } catch (SQLException exception) {
             exception.printStackTrace();
         } finally {
             ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
@@ -127,31 +126,31 @@ public class PlaneRepositoryImpl implements IPlaneRepository {
     private static Plane.PlaneType planeTypeByString(String typeInString) {
         Plane.PlaneType planeType = null;
         switch (typeInString) {
-            case "MiG-35" :
+            case "MiG-35":
                 planeType = Plane.PlaneType.MIG_35;
                 break;
-            case "Cy-57" :
+            case "Cy-57":
                 planeType = Plane.PlaneType.CY_57;
                 break;
-            case "Ty-160" :
+            case "Ty-160":
                 planeType = Plane.PlaneType.TY_160;
                 break;
-            case "Cy-25" :
+            case "Cy-25":
                 planeType = Plane.PlaneType.CY_25;
                 break;
-            case "Cy-35C" :
+            case "Cy-35C":
                 planeType = Plane.PlaneType.CY_35C;
                 break;
-            case "Cy-47" :
+            case "Cy-47":
                 planeType = Plane.PlaneType.CY_47;
                 break;
-            case "Ty-22M3" :
+            case "Ty-22M3":
                 planeType = Plane.PlaneType.TY_22M3;
                 break;
-            case "An-124" :
+            case "An-124":
                 planeType = Plane.PlaneType.AN_124;
                 break;
-            case "B-52" :
+            case "B-52":
                 planeType = Plane.PlaneType.B_52;
                 break;
         }

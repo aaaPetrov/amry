@@ -1,6 +1,5 @@
 package com.solvd.army.service;
 
-import com.solvd.army.domain.MilitaryUnit;
 import com.solvd.army.domain.resources.Ammo;
 
 import java.util.List;

@@ -8,7 +8,7 @@ import java.util.List;
 
 public class WeaponServiceImpl implements IWeaponService {
 
-    private WeaponRepositoryImpl weaponRepository;
+    private final WeaponRepositoryImpl weaponRepository;
 
     public WeaponServiceImpl() {
         weaponRepository = new WeaponRepositoryImpl();

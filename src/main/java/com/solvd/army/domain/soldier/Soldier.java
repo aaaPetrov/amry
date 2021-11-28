@@ -1,7 +1,5 @@
 package com.solvd.army.domain.soldier;
 
-import com.solvd.army.domain.Location;
-
 import java.time.LocalDate;
 
 public class Soldier extends Recruit {
@@ -52,7 +50,9 @@ public class Soldier extends Recruit {
             return rank;
         }
 
-        public long getRankId() { return rankId; }
+        public long getRankId() {
+            return rankId;
+        }
 
     }
 
@@ -78,10 +78,10 @@ public class Soldier extends Recruit {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == this) {
+        if (obj == this) {
             return true;
         }
-        if(obj == null || obj.getClass() != this.getClass()) {
+        if (obj == null || obj.getClass() != this.getClass()) {
             return false;
         }
         Soldier soldier = (Soldier) obj;

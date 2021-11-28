@@ -8,7 +8,7 @@ import java.util.List;
 
 public class TankServiceImpl implements ITankService {
 
-    private TankRepositoryImpl tankRepository;
+    private final TankRepositoryImpl tankRepository;
 
     public TankServiceImpl() {
         tankRepository = new TankRepositoryImpl();

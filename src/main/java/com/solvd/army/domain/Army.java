@@ -48,28 +48,27 @@ public class Army {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == this) {
+        if (obj == this) {
             return true;
         }
-        if(obj == null || obj.getClass() != this.getClass()) {
+        if (obj == null || obj.getClass() != this.getClass()) {
             return false;
         }
         Army army = (Army) obj;
         boolean result = army.getId() == this.getId()
                 && (this.getCountry() != null && this.getCountry().equals(army.getCountry()));
-        if(army.getMilitaryUnits().size() != this.getMilitaryUnits().size()) {
+        if (army.getMilitaryUnits().size() != this.getMilitaryUnits().size()) {
             return false;
         }
         int counter = 0;
         boolean result1 = false;
-        for(int i = 0; i < army.getMilitaryUnits().size(); i++) {
-            if(army.getMilitaryUnits().get(i).equals(this.getMilitaryUnits().get(i))) {
+        for (int i = 0; i < army.getMilitaryUnits().size(); i++) {
+            if (army.getMilitaryUnits().get(i).equals(this.getMilitaryUnits().get(i))) {
                 counter++;
-                if(counter == army.getMilitaryUnits().size()) {
+                if (counter == army.getMilitaryUnits().size()) {
                     result1 = true;
                 }
-            }
-            else {
+            } else {
                 result1 = false;
             }
         }

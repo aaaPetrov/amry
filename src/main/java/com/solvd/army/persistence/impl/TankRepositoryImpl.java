@@ -1,7 +1,6 @@
 package com.solvd.army.persistence.impl;
 
 import com.solvd.army.domain.MilitaryUnit;
-import com.solvd.army.domain.resources.Ammo;
 import com.solvd.army.domain.resources.Tank;
 import com.solvd.army.persistence.ConnectionPool;
 import com.solvd.army.persistence.ITankRepository;
@@ -21,11 +20,11 @@ public class TankRepositoryImpl implements ITankRepository {
     public List<Tank> select(String militaryUnitName) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         List<Tank> tanks = new ArrayList<>();
-        try(PreparedStatement preparedStatement = connection.prepareStatement(SQL_COMMAND)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_COMMAND)) {
             preparedStatement.setString(1, militaryUnitName);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 Tank newTank = new Tank();
                 Tank.TankType tankType = tankTypeByString(resultSet.getString("type"));
                 newTank.setTankType(tankType);
@@ -45,14 +44,14 @@ public class TankRepositoryImpl implements ITankRepository {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommandSelect = "select tank_id from military_unit_tank where military_unit_id = ?;";
         String sqlCommandUpdate = "update military_unit_tank set tank_id = ?, amount = ? where military_unit_id = ? and tank_id = ?;";
-        try(PreparedStatement preparedStatementSelect = connection.prepareStatement(sqlCommandSelect);
-            PreparedStatement preparedStatementUpdate = connection.prepareStatement(sqlCommandUpdate)) {
+        try (PreparedStatement preparedStatementSelect = connection.prepareStatement(sqlCommandSelect);
+             PreparedStatement preparedStatementUpdate = connection.prepareStatement(sqlCommandUpdate)) {
 
-            preparedStatementSelect.setLong(1,militaryUnitId);
+            preparedStatementSelect.setLong(1, militaryUnitId);
             ResultSet resultSet = preparedStatementSelect.executeQuery();
 
             int i = 0;
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 preparedStatementUpdate.setLong(1, tank.get(i).getTankType().getTankId());
                 preparedStatementUpdate.setInt(2, tank.get(i).getAmount());
                 preparedStatementUpdate.setLong(3, militaryUnitId);
@@ -71,7 +70,7 @@ public class TankRepositoryImpl implements ITankRepository {
     public void insert(Tank tank, Long militaryUnitId) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommand = "insert into military_unit_tank(tank_id, military_unit_id, amount) value(?, ?, ?);";
-        try(PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand)) {
             preparedStatement.setLong(1, tank.getTankType().getTankId());
             preparedStatement.setLong(2, militaryUnitId);
             preparedStatement.setLong(3, tank.getAmount());
@@ -127,43 +126,43 @@ public class TankRepositoryImpl implements ITankRepository {
     private static Tank.TankType tankTypeByString(String typeInString) {
         Tank.TankType tankType = null;
         switch (typeInString) {
-            case "2С25 Sproot-CD" :
+            case "2С25 Sproot-CD":
                 tankType = Tank.TankType.T_2C25;
                 break;
-            case "2С31 Vena" :
+            case "2С31 Vena":
                 tankType = Tank.TankType.T_2C31;
                 break;
-            case "BMD-4" :
+            case "BMD-4":
                 tankType = Tank.TankType.BMD_4;
                 break;
-            case "BMD-4M" :
+            case "BMD-4M":
                 tankType = Tank.TankType.BMD_4M;
                 break;
-            case "BTR-90" :
+            case "BTR-90":
                 tankType = Tank.TankType.BTR_90;
                 break;
-            case "BTR-MD" :
+            case "BTR-MD":
                 tankType = Tank.TankType.BTR_MD;
                 break;
-            case "T-14 Armata" :
+            case "T-14 Armata":
                 tankType = Tank.TankType.T_14;
                 break;
-            case "T-15" :
+            case "T-15":
                 tankType = Tank.TankType.T_15;
                 break;
-            case "T-90" :
+            case "T-90":
                 tankType = Tank.TankType.T_90;
                 break;
-            case "T-95 Object" :
+            case "T-95 Object":
                 tankType = Tank.TankType.T_95;
                 break;
-            case "TOC-1 Pinocchio" :
+            case "TOC-1 Pinocchio":
                 tankType = Tank.TankType.TOC_1;
                 break;
-            case "TOC-1A Sunfire" :
+            case "TOC-1A Sunfire":
                 tankType = Tank.TankType.TOC_1A;
                 break;
-            case "Black Eagle" :
+            case "Black Eagle":
                 tankType = Tank.TankType.BLACK_EAGLE;
                 break;
         }

@@ -1,6 +1,7 @@
 package com.solvd.army.service;
 
 import com.solvd.army.domain.Army;
+
 import java.util.List;
 
 public interface IArmyService {

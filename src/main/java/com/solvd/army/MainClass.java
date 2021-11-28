@@ -10,7 +10,6 @@ import com.solvd.army.domain.resources.Tank;
 import com.solvd.army.domain.resources.Weapon;
 import com.solvd.army.domain.soldier.ServiceTerm;
 import com.solvd.army.domain.soldier.Soldier;
-import com.solvd.army.persistence.ConnectionPool;
 import com.solvd.army.service.IArmyService;
 import com.solvd.army.service.impl.ArmyServiceImpl;
 
@@ -27,9 +26,9 @@ public class MainClass {
         //SELECT ALL
         List<Army> armies = armyService.selectAll();
         System.out.println("Objects was created:\n");
-        for(Army army : armies) {
+        for (Army army : armies) {
             System.out.println(army.getCountry());
-            for(MilitaryUnit militaryUnit : army.getMilitaryUnits()) {
+            for (MilitaryUnit militaryUnit : army.getMilitaryUnits()) {
                 System.out.println("id: " + militaryUnit.getId());
                 System.out.println("name: " + militaryUnit.getName());
                 System.out.println("location: " + militaryUnit.getLocation().getLongitude() + ", " + militaryUnit.getLocation().getLatitude());
@@ -52,7 +51,7 @@ public class MainClass {
         Ammo ammo12 = new Ammo(Ammo.AmmoType.B_5_56x45, 12);
         Ammo ammo21 = new Ammo(Ammo.AmmoType.B_6x51, 21);
         Ammo ammo22 = new Ammo(Ammo.AmmoType.B_7_62x39, 22);
-        militaryUnit1.setAmmunition(Arrays.asList(ammo11,ammo12));
+        militaryUnit1.setAmmunition(Arrays.asList(ammo11, ammo12));
         militaryUnit2.setAmmunition(Arrays.asList(ammo21, ammo22));
 
         Weapon weapon11 = new Weapon(Weapon.WeaponType.A_9A91, 11);
@@ -77,13 +76,13 @@ public class MainClass {
         militaryUnit2.setPlanes(Arrays.asList(plane21, plane22));
 
         ServiceTerm serviceTerm11 = new ServiceTerm(LocalDate.of(2001, 1, 1), 5);
-        Soldier soldier11 = new Soldier("A_INSERTED", "A_INSERTED", LocalDate.of(2001,1,1), Soldier.Rank.MAJOR_GENERAL, serviceTerm11);
+        Soldier soldier11 = new Soldier("A_INSERTED", "A_INSERTED", LocalDate.of(2001, 1, 1), Soldier.Rank.MAJOR_GENERAL, serviceTerm11);
         ServiceTerm serviceTerm12 = new ServiceTerm(LocalDate.of(2002, 2, 2), 5);
-        Soldier soldier12 = new Soldier("B_INSERTED", "B_INSERTED", LocalDate.of(2002,2,2), Soldier.Rank.CAPTAIN, serviceTerm12);
+        Soldier soldier12 = new Soldier("B_INSERTED", "B_INSERTED", LocalDate.of(2002, 2, 2), Soldier.Rank.CAPTAIN, serviceTerm12);
         ServiceTerm serviceTerm21 = new ServiceTerm(LocalDate.of(2003, 3, 3), 5);
-        Soldier soldier21 = new Soldier("C_INSERTED", "C_INSERTED", LocalDate.of(2003,3,3), Soldier.Rank.COLONEL, serviceTerm21);
+        Soldier soldier21 = new Soldier("C_INSERTED", "C_INSERTED", LocalDate.of(2003, 3, 3), Soldier.Rank.COLONEL, serviceTerm21);
         ServiceTerm serviceTerm22 = new ServiceTerm(LocalDate.of(2004, 4, 4), 5);
-        Soldier soldier22 = new Soldier("D_INSERTED", "D_INSERTED", LocalDate.of(2004,4,4), Soldier.Rank.LANCE_SERGEANT, serviceTerm22);
+        Soldier soldier22 = new Soldier("D_INSERTED", "D_INSERTED", LocalDate.of(2004, 4, 4), Soldier.Rank.LANCE_SERGEANT, serviceTerm22);
         militaryUnit1.setSoldiers(Arrays.asList(soldier11, soldier12));
         militaryUnit2.setSoldiers(Arrays.asList(soldier21, soldier22));
 
@@ -92,14 +91,14 @@ public class MainClass {
         armyService.insert(army);
         System.out.println("Object was inserted:\n");
         System.out.println(army.getCountry());
-        for(MilitaryUnit militaryUnit : army.getMilitaryUnits()) {
+        for (MilitaryUnit militaryUnit : army.getMilitaryUnits()) {
             System.out.println("id: " + militaryUnit.getId());
             System.out.println("name: " + militaryUnit.getName());
             System.out.println("location: " + militaryUnit.getLocation().getLongitude() + ", " + militaryUnit.getLocation().getLatitude());
         }
         System.out.println("-------------------\n");
 
-        System.out.println("\n\n========================UPDATE ARMY=================\n\n");;
+        System.out.println("\n\n========================UPDATE ARMY=================\n\n");
 
         army.setCountry("UPDATED");
         militaryUnit1.setName("UPDATED_UNIT1");
@@ -115,7 +114,7 @@ public class MainClass {
         ammo21.setAmount(2100);
         ammo22.setAmmoType(Ammo.AmmoType.B_8_6x70);
         ammo22.setAmount(2200);
-        militaryUnit1.setAmmunition(Arrays.asList(ammo11,ammo12));
+        militaryUnit1.setAmmunition(Arrays.asList(ammo11, ammo12));
         militaryUnit2.setAmmunition(Arrays.asList(ammo21, ammo22));
 
         weapon11.setWeaponType(Weapon.WeaponType.GL_RPG_32);
@@ -153,22 +152,22 @@ public class MainClass {
 
         serviceTerm11 = new ServiceTerm(LocalDate.of(1991, 1, 1), 5);
         Long soldierId11 = soldier11.getId();
-        soldier11 = new Soldier("A_UPDATED", "A_UPDATED", LocalDate.of(1991,1,1), Soldier.Rank.MAJOR_GENERAL, serviceTerm11);
+        soldier11 = new Soldier("A_UPDATED", "A_UPDATED", LocalDate.of(1991, 1, 1), Soldier.Rank.MAJOR_GENERAL, serviceTerm11);
         soldier11.setId(soldierId11);
 
         serviceTerm12 = new ServiceTerm(LocalDate.of(1992, 2, 2), 5);
         Long soldierId12 = soldier12.getId();
-        soldier12 = new Soldier("B_UPDATED", "B_UPDATED", LocalDate.of(1992,2,2), Soldier.Rank.CAPTAIN, serviceTerm12);
+        soldier12 = new Soldier("B_UPDATED", "B_UPDATED", LocalDate.of(1992, 2, 2), Soldier.Rank.CAPTAIN, serviceTerm12);
         soldier12.setId(soldierId12);
 
         serviceTerm21 = new ServiceTerm(LocalDate.of(1993, 3, 3), 5);
         Long soldierId21 = soldier21.getId();
-        soldier21 = new Soldier("C_UPDATED", "C_UPDATED", LocalDate.of(1993,3,3), Soldier.Rank.COLONEL, serviceTerm21);
+        soldier21 = new Soldier("C_UPDATED", "C_UPDATED", LocalDate.of(1993, 3, 3), Soldier.Rank.COLONEL, serviceTerm21);
         soldier21.setId(soldierId21);
 
         serviceTerm22 = new ServiceTerm(LocalDate.of(1994, 4, 4), 5);
         Long soldierId22 = soldier22.getId();
-        soldier22 = new Soldier("D_UPDATED", "D_UPDATED", LocalDate.of(1994,4,4), Soldier.Rank.LANCE_SERGEANT, serviceTerm22);
+        soldier22 = new Soldier("D_UPDATED", "D_UPDATED", LocalDate.of(1994, 4, 4), Soldier.Rank.LANCE_SERGEANT, serviceTerm22);
         soldier22.setId(soldierId22);
         militaryUnit1.setSoldiers(Arrays.asList(soldier11, soldier12));
         militaryUnit2.setSoldiers(Arrays.asList(soldier21, soldier22));
@@ -178,27 +177,27 @@ public class MainClass {
         armyService.update(army);
         System.out.println("Object was updated:\n");
         System.out.println(army.getCountry());
-        for(MilitaryUnit militaryUnit : army.getMilitaryUnits()) {
+        for (MilitaryUnit militaryUnit : army.getMilitaryUnits()) {
             System.out.println("id: " + militaryUnit.getId());
             System.out.println("name: " + militaryUnit.getName());
             System.out.println("location: " + militaryUnit.getLocation().getLongitude() + ", " + militaryUnit.getLocation().getLatitude());
         }
         System.out.println("-------------------\n");
 
-        System.out.println("\n\n========================SELECT UPDATED ARMY AND CREATE OBJECT=================\n\n");;
+        System.out.println("\n\n========================SELECT UPDATED ARMY AND CREATE OBJECT=================\n\n");
 
         Army selectedArmy = armyService.select(army.getCountry());
         System.out.println("New object was created from select(country) after update:\n");
         System.out.println(army.getCountry());
-        for(MilitaryUnit militaryUnit : army.getMilitaryUnits()) {
+        for (MilitaryUnit militaryUnit : army.getMilitaryUnits()) {
             System.out.println("id: " + militaryUnit.getId());
             System.out.println("name: " + militaryUnit.getName());
             System.out.println("location: " + militaryUnit.getLocation().getLongitude() + ", " + militaryUnit.getLocation().getLatitude());
         }
         System.out.println("-------------------\n");
 
-        System.out.println("\n\n========================DELETE UPDATED ARMY=================\n\n");;
-        if(army.equals(selectedArmy)) {
+        System.out.println("\n\n========================DELETE UPDATED ARMY=================\n\n");
+        if (army.equals(selectedArmy)) {
             System.out.println("object \"army\" was inserted, then updated.");
             System.out.println("Then data was selected by select(String country) in object \"selectedArmy\".");
             System.out.println("army and selectedArmy are equals.");

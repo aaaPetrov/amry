@@ -1,6 +1,5 @@
 package com.solvd.army.domain.resources;
 
-import com.solvd.army.domain.soldier.Soldier;
 
 public class Weapon {
 
@@ -59,10 +58,10 @@ public class Weapon {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == this) {
+        if (obj == this) {
             return true;
         }
-        if(obj == null || obj.getClass() != this.getClass()) {
+        if (obj == null || obj.getClass() != this.getClass()) {
             return false;
         }
         Weapon weapon = (Weapon) obj;

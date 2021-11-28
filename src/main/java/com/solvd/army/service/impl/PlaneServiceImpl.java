@@ -8,7 +8,7 @@ import java.util.List;
 
 public class PlaneServiceImpl implements IPlaneService {
 
-    private PlaneRepositoryImpl planeRepository;
+    private final PlaneRepositoryImpl planeRepository;
 
     public PlaneServiceImpl() {
         planeRepository = new PlaneRepositoryImpl();

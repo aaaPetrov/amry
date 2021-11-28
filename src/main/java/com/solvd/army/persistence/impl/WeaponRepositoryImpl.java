@@ -1,7 +1,6 @@
 package com.solvd.army.persistence.impl;
 
 import com.solvd.army.domain.MilitaryUnit;
-import com.solvd.army.domain.resources.Ammo;
 import com.solvd.army.domain.resources.Weapon;
 import com.solvd.army.persistence.ConnectionPool;
 import com.solvd.army.persistence.IWeaponRepository;
@@ -21,11 +20,11 @@ public class WeaponRepositoryImpl implements IWeaponRepository {
     public List<Weapon> select(String militaryUnitName) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         List<Weapon> weapons = new ArrayList<>();
-        try(PreparedStatement preparedStatement = connection.prepareStatement(SQL_COMMAND)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_COMMAND)) {
             preparedStatement.setString(1, militaryUnitName);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 Weapon newWeapon = new Weapon();
                 Weapon.WeaponType weaponType = weaponTypeByString(resultSet.getString("type"));
                 newWeapon.setWeaponType(weaponType);
@@ -45,14 +44,14 @@ public class WeaponRepositoryImpl implements IWeaponRepository {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommandSelect = "select weapon_id from military_unit_weapon where military_unit_id = ?;";
         String sqlCommandUpdate = "update military_unit_weapon set weapon_id = ?, amount = ? where military_unit_id = ? and weapon_id = ?;";
-        try(PreparedStatement preparedStatementSelect = connection.prepareStatement(sqlCommandSelect);
-            PreparedStatement preparedStatementUpdate = connection.prepareStatement(sqlCommandUpdate)) {
+        try (PreparedStatement preparedStatementSelect = connection.prepareStatement(sqlCommandSelect);
+             PreparedStatement preparedStatementUpdate = connection.prepareStatement(sqlCommandUpdate)) {
 
-            preparedStatementSelect.setLong(1,militaryUnitId);
+            preparedStatementSelect.setLong(1, militaryUnitId);
             ResultSet resultSet = preparedStatementSelect.executeQuery();
 
             int i = 0;
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 preparedStatementUpdate.setLong(1, weapon.get(i).getWeaponType().getWeaponId());
                 preparedStatementUpdate.setInt(2, weapon.get(i).getAmount());
                 preparedStatementUpdate.setLong(3, militaryUnitId);

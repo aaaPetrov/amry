@@ -17,13 +17,13 @@ public class ArmyRepositoryImpl implements IArmyRepository {
     public void update(Army army) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommand = "update armies set country = ? where id = ?;";
-        try(PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, army.getCountry());
             preparedStatement.setLong(2, army.getId());
             preparedStatement.executeUpdate();
 
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
-            if(resultSet.next()) {
+            if (resultSet.next()) {
                 army.setId(resultSet.getLong(1));
             }
         } catch (SQLException e) {
@@ -55,7 +55,7 @@ public class ArmyRepositoryImpl implements IArmyRepository {
     public void delete(Army army) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommand = "delete from armies where country = ?;";
-        try(PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand)) {
             preparedStatement.setString(1, army.getCountry());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -70,11 +70,11 @@ public class ArmyRepositoryImpl implements IArmyRepository {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommand = "select id as army_id, country from armies where country = ?;";
         Army army = null;
-        try(PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand)) {
             preparedStatement.setString(1, country);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            if(resultSet.next()) {
+            if (resultSet.next()) {
                 army = new Army();
                 army.setId(resultSet.getLong(1));
                 army.setCountry(resultSet.getString("country"));
@@ -103,7 +103,7 @@ public class ArmyRepositoryImpl implements IArmyRepository {
     }
 
     private static List<Army> fillArmies(ResultSet resultSet, List<Army> armies) {
-        if(armies == null) {
+        if (armies == null) {
             armies = new ArrayList<>();
         }
         try {

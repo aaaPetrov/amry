@@ -21,11 +21,11 @@ public class SoldierRepositoryImpl implements ISoldierRepository {
     public List<Soldier> select(String militaryUnitName) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         List<Soldier> soldiers = new ArrayList<>();
-        try(PreparedStatement preparedStatement = connection.prepareStatement(SQL_COMMAND)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_COMMAND)) {
             preparedStatement.setString(1, militaryUnitName);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 Soldier newSoldier = new Soldier();
                 Soldier.Rank rankType = rankTypeByString(resultSet.getString("type"));
                 newSoldier.setId(resultSet.getLong("soldier_id"));

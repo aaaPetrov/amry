@@ -5,14 +5,15 @@ import com.solvd.army.domain.MilitaryUnit;
 import com.solvd.army.domain.soldier.Soldier;
 import com.solvd.army.persistence.impl.ArmyRepositoryImpl;
 import com.solvd.army.service.IArmyService;
+
 import java.util.List;
 
 
 public class ArmyServiceImpl implements IArmyService {
 
-    private ArmyRepositoryImpl armyRepository;
-    private MilitaryUnitServiceImpl militaryUnitService;
-    private SoldierServiceImpl soldierService;
+    private final ArmyRepositoryImpl armyRepository;
+    private final MilitaryUnitServiceImpl militaryUnitService;
+    private final SoldierServiceImpl soldierService;
 
     public ArmyServiceImpl() {
         armyRepository = new ArmyRepositoryImpl();
@@ -23,8 +24,8 @@ public class ArmyServiceImpl implements IArmyService {
     @Override
     public Army update(Army army) {
         armyRepository.update(army);
-        if(army.getMilitaryUnits() != null) {
-            for(MilitaryUnit militaryUnit : army.getMilitaryUnits()) {
+        if (army.getMilitaryUnits() != null) {
+            for (MilitaryUnit militaryUnit : army.getMilitaryUnits()) {
                 militaryUnitService.update(militaryUnit, army.getId());
             }
         }
@@ -34,8 +35,8 @@ public class ArmyServiceImpl implements IArmyService {
     @Override
     public Army insert(Army army) {
         armyRepository.insert(army);
-        if(army.getMilitaryUnits() != null) {
-            for(MilitaryUnit militaryUnit : army.getMilitaryUnits()) {
+        if (army.getMilitaryUnits() != null) {
+            for (MilitaryUnit militaryUnit : army.getMilitaryUnits()) {
                 militaryUnitService.insert(militaryUnit, army.getId());
             }
         }
@@ -45,9 +46,9 @@ public class ArmyServiceImpl implements IArmyService {
     @Override
     public void delete(Army army) {
         armyRepository.delete(army);
-        if(army.getMilitaryUnits() != null) {
+        if (army.getMilitaryUnits() != null) {
             for (MilitaryUnit militaryUnit : army.getMilitaryUnits()) {
-                if(militaryUnit.getSoldiers() != null) {
+                if (militaryUnit.getSoldiers() != null) {
                     for (Soldier soldier : militaryUnit.getSoldiers()) {
                         soldierService.delete(soldier);
                     }
