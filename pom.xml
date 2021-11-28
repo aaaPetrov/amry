@@ -11,7 +11,16 @@
 
     <properties>
         <javaVersion>1.8</javaVersion>
+        <mySqlConnectorVersion>8.0.27</mySqlConnectorVersion>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mySqlConnectorVersion}</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>

@@ -1,9 +1,12 @@
-package com.solvd.army.model.resources;
+package com.solvd.army.domain.resources;
 
 public class Tank {
 
-    private final TankType tankType;
+    private TankType tankType;
     private int amount;
+
+    public Tank() {
+    }
 
     public Tank(TankType tankType, int amount) {
         this.tankType = tankType;
@@ -16,14 +19,20 @@ public class Tank {
         BTR_MD("BTR-MD"), T_14("T-14 Armata"), T_15("T-15"), T_90("T-90"), T_95("T-95 Object"), TOC_1("TOC-1 Pinocchio"),
         TOC_1A("TOC-1A Sunfire"), BLACK_EAGLE("Black Eagle");
 
+        private final long tankId;
         private final String tankType;
 
         TankType(String tankType) {
+            this.tankId = this.ordinal() + 1;
             this.tankType = tankType;
         }
 
         public String getTankType() {
             return tankType;
+        }
+
+        public long getTankId() {
+            return tankId;
         }
 
     }
@@ -38,6 +47,22 @@ public class Tank {
 
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    public void setTankType(TankType tankType) {
+        this.tankType = tankType;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this) {
+            return true;
+        }
+        if(obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+        Tank tank = (Tank) obj;
+        return this.getTankType().equals(tank.getTankType()) && this.getAmount() == tank.getAmount();
     }
 
 }

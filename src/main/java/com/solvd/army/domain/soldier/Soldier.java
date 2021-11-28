@@ -1,4 +1,6 @@
-package com.solvd.army.model.soldier;
+package com.solvd.army.domain.soldier;
+
+import com.solvd.army.domain.Location;
 
 import java.time.LocalDate;
 
@@ -6,14 +8,27 @@ public class Soldier extends Recruit {
 
     public static int count;
 
+    private long id;
     private Rank rank;
     private ServiceTerm term;
+
+    public Soldier() {
+        super();
+    }
 
     public Soldier(String firstName, String lastName, LocalDate birthday, Rank rank, ServiceTerm term) {
         super(firstName, lastName, birthday);
         this.rank = rank;
         this.term = term;
         count++;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public enum Rank {
@@ -26,14 +41,18 @@ public class Soldier extends Recruit {
         LIEUTENANT_GENERAL("Lieutenant-general"), COLONEL_GENERAL("Colonel-general");
 
         private final String rank;
+        private final long rankId;
 
         Rank(String rank) {
+            this.rankId = this.ordinal() + 1;
             this.rank = rank;
         }
 
         public String getRank() {
             return rank;
         }
+
+        public long getRankId() { return rankId; }
 
     }
 
@@ -55,6 +74,21 @@ public class Soldier extends Recruit {
 
     public static int getCount() {
         return count;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this) {
+            return true;
+        }
+        if(obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+        Soldier soldier = (Soldier) obj;
+        return this.getId() == soldier.getId() && this.getAge() == soldier.getAge() && this.getTerm().equals(soldier.getTerm())
+                && this.getRank().equals(soldier.getRank()) && this.getBirthday().equals(soldier.getBirthday())
+                && (this.getFirstName() != null && this.getFirstName().equals(soldier.getFirstName()))
+                && (this.getLastName() != null && this.getLastName().equals(soldier.getLastName()));
     }
 
 }

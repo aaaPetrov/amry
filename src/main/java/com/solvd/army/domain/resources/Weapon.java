@@ -1,9 +1,14 @@
-package com.solvd.army.model.resources;
+package com.solvd.army.domain.resources;
+
+import com.solvd.army.domain.soldier.Soldier;
 
 public class Weapon {
 
     private WeaponType weaponType;
     private int amount;
+
+    public Weapon() {
+    }
 
     public Weapon(WeaponType weaponType, int amount) {
         this.weaponType = weaponType;
@@ -18,14 +23,20 @@ public class Weapon {
         GL_GP_25("GL.GP-25"), GL_6G30("GL.6G30"), GL_GM_94("GL.GM-94"), GL_RMG("GL.RMG"), GL_RPG_26("GL.RPG26"),
         GL_RPG_32("GL.RPG32");
 
-        private String weaponType;
+        private final long weaponId;
+        private final String weaponType;
 
         WeaponType(String weaponType) {
+            this.weaponId = this.ordinal() + 1;
             this.weaponType = weaponType;
         }
 
         public String getWeaponType() {
             return weaponType;
+        }
+
+        public long getWeaponId() {
+            return weaponId;
         }
 
     }
@@ -44,6 +55,18 @@ public class Weapon {
 
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this) {
+            return true;
+        }
+        if(obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+        Weapon weapon = (Weapon) obj;
+        return this.getWeaponType().equals(weapon.getWeaponType()) && this.getAmount() == weapon.getAmount();
     }
 
 }
