@@ -19,7 +19,7 @@ public class MilitaryUnitRepositoryImpl implements IMilitaryUnitRepository {
 
 
     @Override
-    public List<MilitaryUnit> select(String country) {
+    public List<MilitaryUnit> get(String country) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommand = "select MU.id as military_unit_id, MU.army_id, MU.name, MU.longitude, MU.latitude from military_units as MU where army_id = "
                 + "(select A.id from armies as A where country = ?);";
@@ -64,7 +64,7 @@ public class MilitaryUnitRepositoryImpl implements IMilitaryUnitRepository {
     }
 
     @Override
-    public void insert(MilitaryUnit militaryUnit, Long armyId) {
+    public void create(MilitaryUnit militaryUnit, Long armyId) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommand = "insert into military_units(army_id, name, longitude, latitude) value(?,?,?,?);";
 

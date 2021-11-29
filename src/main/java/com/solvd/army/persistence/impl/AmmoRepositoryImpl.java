@@ -14,7 +14,7 @@ public class AmmoRepositoryImpl implements IAmmoRepository {
     private final static String SQL_COMMAND = SELECT_COMMAND();
 
     @Override
-    public List<Ammo> select(String militaryUnitName) {
+    public List<Ammo> getByMilitaryUnitName(String militaryUnitName) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         List<Ammo> ammunition = new ArrayList<>();
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_COMMAND)) {
@@ -37,24 +37,38 @@ public class AmmoRepositoryImpl implements IAmmoRepository {
     }
 
     @Override
-    public void update(List<Ammo> ammo, Long militaryUnitId) {
+    public List<Long> getId(Long militaryUnitId) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommandSelect = "select ammo_id from military_unit_ammo where military_unit_id = ?;";
-        String sqlCommandUpdate = "update military_unit_ammo set ammo_id = ?, amount = ? where military_unit_id = ? and ammo_id = ?;";
-        try (PreparedStatement preparedStatementSelect = connection.prepareStatement(sqlCommandSelect);
-             PreparedStatement preparedStatementUpdate = connection.prepareStatement(sqlCommandUpdate)) {
-
+        List<Long> ids = null;
+        try (PreparedStatement preparedStatementSelect = connection.prepareStatement(sqlCommandSelect)) {
             preparedStatementSelect.setLong(1, militaryUnitId);
             ResultSet resultSet = preparedStatementSelect.executeQuery();
-
-            int i = 0;
+            if(resultSet != null) {
+                ids = new ArrayList<>();
+            }
             while (resultSet.next()) {
+                ids.add(resultSet.getLong("ammo_id"));
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        } finally {
+            ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
+        }
+        return ids;
+    }
+
+    @Override
+    public void update(List<Ammo> ammo, List<Long> ammoIds, Long militaryUnitId) {
+        Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
+        String sqlCommandUpdate = "update military_unit_ammo set ammo_id = ?, amount = ? where military_unit_id = ? and ammo_id = ?;";
+        try (PreparedStatement preparedStatementUpdate = connection.prepareStatement(sqlCommandUpdate)) {
+            for(int i = 0; i < ammoIds.size(); i++) {
                 preparedStatementUpdate.setLong(1, ammo.get(i).getAmmoType().getAmmoId());
                 preparedStatementUpdate.setInt(2, ammo.get(i).getAmount());
                 preparedStatementUpdate.setLong(3, militaryUnitId);
-                preparedStatementUpdate.setLong(4, resultSet.getLong("ammo_id"));
+                preparedStatementUpdate.setLong(4, ammoIds.get(i));
                 preparedStatementUpdate.executeUpdate();
-                i++;
             }
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -64,7 +78,7 @@ public class AmmoRepositoryImpl implements IAmmoRepository {
     }
 
     @Override
-    public void insert(Ammo ammo, Long militaryUnitId) {
+    public void create(Ammo ammo, Long militaryUnitId) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommand = "insert into military_unit_ammo(ammo_id, military_unit_id, amount) value(?, ?, ?);";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand)) {

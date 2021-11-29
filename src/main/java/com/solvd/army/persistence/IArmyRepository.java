@@ -6,14 +6,14 @@ import java.util.List;
 
 public interface IArmyRepository {
 
-    void insert(Army army);
+    void create(Army army);
 
     void delete(Army army);
 
     void update(Army army);
 
-    Army select(String country);
+    Army get(String country);
 
-    List<Army> selectAll();
+    List<Army> getAll();
 
 }

@@ -6,12 +6,16 @@ import java.util.List;
 
 public interface ISoldierService {
 
-    Soldier insert(Soldier soldier, Long militaryUnitId);
+    Soldier createSoldier(Soldier soldier, Long militaryUnitId);
 
-    Soldier update(Soldier soldier, Long militaryUnitId);
+    Soldier createRecruit(Soldier soldier, Long militaryUnitId);
+
+    Soldier updateSoldier(Soldier soldier, Long militaryUnitId);
+
+    Soldier updateRecruit(Soldier soldier, Long militaryUnitId);
 
     void delete(Soldier soldier);
 
-    List<Soldier> select(String militaryUnitName);
+    List<Soldier> getByMilitaryUnitName(String militaryUnitName);
 
 }

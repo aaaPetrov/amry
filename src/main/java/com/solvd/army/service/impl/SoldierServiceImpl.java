@@ -1,5 +1,7 @@
 package com.solvd.army.service.impl;
 
+import com.solvd.army.domain.exception.NoDataException;
+import com.solvd.army.domain.resources.Ammo;
 import com.solvd.army.domain.soldier.Soldier;
 import com.solvd.army.persistence.impl.SoldierRepositoryImpl;
 import com.solvd.army.service.ISoldierService;
@@ -15,8 +17,12 @@ public class SoldierServiceImpl implements ISoldierService {
     }
 
     @Override
-    public List<Soldier> select(String militaryUnitName) {
-        return soldierRepository.select(militaryUnitName);
+    public List<Soldier> getByMilitaryUnitName(String militaryUnitName) {
+        List<Soldier> soldiers = soldierRepository.getByMilitaryUnitName(militaryUnitName);
+        if(soldiers == null) {
+            throw new NoDataException("soldierRepository.getByMilitaryUnitName() was returned null-value in SoldierServiceImpl.");
+        }
+        return soldiers;
     }
 
     @Override
@@ -25,14 +31,30 @@ public class SoldierServiceImpl implements ISoldierService {
     }
 
     @Override
-    public Soldier insert(Soldier soldier, Long militaryUnitId) {
-        soldierRepository.insert(soldier, militaryUnitId);
+    public Soldier createSoldier(Soldier soldier, Long militaryUnitId) {
+        Long recruitId = soldierRepository.createRecruit(soldier, militaryUnitId);
+        if(recruitId == null) {
+            throw new NoDataException("soldierRepository.createRecruit() was returned null-value in SoldierServiceImpl.");
+        }
+        soldierRepository.createSoldier(soldier, militaryUnitId, recruitId);
         return soldier;
     }
 
     @Override
-    public Soldier update(Soldier soldier, Long militaryUnitId) {
-        soldierRepository.update(soldier, militaryUnitId);
+    public Soldier createRecruit(Soldier soldier, Long militaryUnitId) {
+        soldierRepository.createRecruit(soldier, militaryUnitId);
+        return soldier;
+    }
+
+    @Override
+    public Soldier updateSoldier(Soldier soldier, Long militaryUnitId) {
+        soldierRepository.updateSoldier(soldier,militaryUnitId);
+        return soldier;
+    }
+
+    @Override
+    public Soldier updateRecruit(Soldier soldier, Long militaryUnitId) {
+        soldierRepository.updateRecruit(soldier, militaryUnitId);
         return soldier;
     }
 

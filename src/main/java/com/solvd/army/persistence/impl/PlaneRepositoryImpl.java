@@ -17,7 +17,7 @@ public class PlaneRepositoryImpl implements IPlaneRepository {
     private final static String SQL_COMMAND = SELECT_COMMAND();
 
     @Override
-    public List<Plane> select(String militaryUnitName) {
+    public List<Plane> getByMilitaryUnitName(String militaryUnitName) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         List<Plane> planes = new ArrayList<>();
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_COMMAND)) {
@@ -40,24 +40,38 @@ public class PlaneRepositoryImpl implements IPlaneRepository {
     }
 
     @Override
-    public void update(List<Plane> plane, Long militaryUnitId) {
+    public List<Long> getId(Long militaryUnitId) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommandSelect = "select plane_id from military_unit_plane where military_unit_id = ?;";
-        String sqlCommandUpdate = "update military_unit_plane set plane_id = ?, amount = ? where military_unit_id = ? and plane_id = ?;";
-        try (PreparedStatement preparedStatementSelect = connection.prepareStatement(sqlCommandSelect);
-             PreparedStatement preparedStatementUpdate = connection.prepareStatement(sqlCommandUpdate)) {
-
+        List<Long> ids = null;
+        try (PreparedStatement preparedStatementSelect = connection.prepareStatement(sqlCommandSelect)) {
             preparedStatementSelect.setLong(1, militaryUnitId);
             ResultSet resultSet = preparedStatementSelect.executeQuery();
-
-            int i = 0;
+            if(resultSet != null) {
+                ids = new ArrayList<>();
+            }
             while (resultSet.next()) {
+                ids.add(resultSet.getLong("plane_id"));
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        } finally {
+            ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
+        }
+        return ids;
+    }
+
+    @Override
+    public void update(List<Plane> plane, List<Long> planeIds, Long militaryUnitId) {
+        Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
+        String sqlCommandUpdate = "update military_unit_plane set plane_id = ?, amount = ? where military_unit_id = ? and plane_id = ?;";
+        try (PreparedStatement preparedStatementUpdate = connection.prepareStatement(sqlCommandUpdate)) {
+            for(int i = 0; i < planeIds.size(); i++) {
                 preparedStatementUpdate.setLong(1, plane.get(i).getPlaneType().getPlaneId());
                 preparedStatementUpdate.setInt(2, plane.get(i).getAmount());
                 preparedStatementUpdate.setLong(3, militaryUnitId);
-                preparedStatementUpdate.setLong(4, resultSet.getLong("plane_id"));
+                preparedStatementUpdate.setLong(4, planeIds.get(i));
                 preparedStatementUpdate.executeUpdate();
-                i++;
             }
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -67,7 +81,7 @@ public class PlaneRepositoryImpl implements IPlaneRepository {
     }
 
     @Override
-    public void insert(Plane plane, Long militaryUnitId) {
+    public void create(Plane plane, Long militaryUnitId) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommand = "insert into military_unit_plane(plane_id, military_unit_id, amount) value(?, ?, ?);";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand)) {

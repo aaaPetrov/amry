@@ -6,10 +6,12 @@ import java.util.List;
 
 public interface IWeaponService {
 
-    Weapon insert(Weapon weapon, Long militaryUnitId);
+    Weapon create(Weapon weapon, Long militaryUnitId);
 
-    List<Weapon> update(List<Weapon> weapon, Long militaryUnitId);
+    List<Weapon> update(List<Weapon> weapon, List<Long> weaponIds, Long militaryUnitId);
 
-    List<Weapon> select(String militaryUnitName);
+    List<Weapon> getByMilitaryUnitName(String militaryUnitName);
+
+    List<Long> getId(Long militaryUnitId);
 
 }

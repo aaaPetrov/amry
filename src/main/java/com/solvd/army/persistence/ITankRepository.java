@@ -6,10 +6,12 @@ import java.util.List;
 
 public interface ITankRepository {
 
-    void insert(Tank tank, Long militaryUnitId);
+    void create(Tank tank, Long militaryUnitId);
 
-    void update(List<Tank> tank, Long militaryUnitId);
+    void update(List<Tank> tank, List<Long> tankIds, Long militaryUnitId);
 
-    List<Tank> select(String militaryUnitName);
+    List<Tank> getByMilitaryUnitName(String militaryUnitName);
+
+    List<Long> getId(Long militaryUnitId);
 
 }

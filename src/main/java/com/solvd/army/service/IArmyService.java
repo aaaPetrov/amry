@@ -10,10 +10,10 @@ public interface IArmyService {
 
     void delete(Army army);
 
-    Army insert(Army army);
+    Army create(Army army);
 
-    Army select(String country);
+    Army get(String country);
 
-    List<Army> selectAll();
+    List<Army> getAll();
 
 }

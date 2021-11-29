@@ -2,6 +2,7 @@ package com.solvd.army.service.impl;
 
 import com.solvd.army.domain.Army;
 import com.solvd.army.domain.MilitaryUnit;
+import com.solvd.army.domain.exception.NoDataException;
 import com.solvd.army.domain.soldier.Soldier;
 import com.solvd.army.persistence.impl.ArmyRepositoryImpl;
 import com.solvd.army.service.IArmyService;
@@ -33,11 +34,11 @@ public class ArmyServiceImpl implements IArmyService {
     }
 
     @Override
-    public Army insert(Army army) {
-        armyRepository.insert(army);
+    public Army create(Army army) {
+        armyRepository.create(army);
         if (army.getMilitaryUnits() != null) {
             for (MilitaryUnit militaryUnit : army.getMilitaryUnits()) {
-                militaryUnitService.insert(militaryUnit, army.getId());
+                militaryUnitService.create(militaryUnit, army.getId());
             }
         }
         return army;
@@ -58,15 +59,26 @@ public class ArmyServiceImpl implements IArmyService {
     }
 
     @Override
-    public Army select(String country) {
-        Army army = armyRepository.select(country);
-        army.setMilitaryUnits(militaryUnitService.select(army.getCountry()));
+    public Army get(String country) {
+        Army army = armyRepository.get(country);
+        if(army == null) {
+            throw new NoDataException("armyRepository.get() was returned null-value in ArmyServiceImpl.");
+        }
+        List<MilitaryUnit> militaryUnits = militaryUnitService.get(army.getCountry());
+        if(militaryUnits == null) {
+            throw new NoDataException("militaryUnitService.get() was returned null-value in ArmyServiceImpl.");
+        }
+        army.setMilitaryUnits(militaryUnits);
         return army;
     }
 
     @Override
-    public List<Army> selectAll() {
-        return armyRepository.selectAll();
+    public List<Army> getAll() {
+        List<Army> armies = armyRepository.getAll();
+        if(armies == null) {
+            throw new NoDataException("armyRepository.getAll() was returned null-value in ArmyServiceImpl.");
+        }
+        return armies;
     }
 
 }

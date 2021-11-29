@@ -6,10 +6,12 @@ import java.util.List;
 
 public interface IWeaponRepository {
 
-    void insert(Weapon weapon, Long military_unit_id);
+    void create(Weapon weapon, Long militaryUnitId);
 
-    void update(List<Weapon> weapon, Long military_unit_id);
+    void update(List<Weapon> weapon, List<Long> weaponIds, Long militaryUnitId);
 
-    List<Weapon> select(String militaryUnitName);
+    List<Weapon> getByMilitaryUnitName(String militaryUnitName);
+
+    List<Long> getId(Long militaryUnitId);
 
 }

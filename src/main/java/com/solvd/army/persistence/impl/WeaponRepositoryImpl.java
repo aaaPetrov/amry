@@ -17,7 +17,7 @@ public class WeaponRepositoryImpl implements IWeaponRepository {
     private final static String SQL_COMMAND = SELECT_COMMAND();
 
     @Override
-    public List<Weapon> select(String militaryUnitName) {
+    public List<Weapon> getByMilitaryUnitName(String militaryUnitName) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         List<Weapon> weapons = new ArrayList<>();
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_COMMAND)) {
@@ -40,24 +40,38 @@ public class WeaponRepositoryImpl implements IWeaponRepository {
     }
 
     @Override
-    public void update(List<Weapon> weapon, Long militaryUnitId) {
+    public List<Long> getId(Long militaryUnitId) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommandSelect = "select weapon_id from military_unit_weapon where military_unit_id = ?;";
-        String sqlCommandUpdate = "update military_unit_weapon set weapon_id = ?, amount = ? where military_unit_id = ? and weapon_id = ?;";
-        try (PreparedStatement preparedStatementSelect = connection.prepareStatement(sqlCommandSelect);
-             PreparedStatement preparedStatementUpdate = connection.prepareStatement(sqlCommandUpdate)) {
-
+        List<Long> ids = null;
+        try (PreparedStatement preparedStatementSelect = connection.prepareStatement(sqlCommandSelect)) {
             preparedStatementSelect.setLong(1, militaryUnitId);
             ResultSet resultSet = preparedStatementSelect.executeQuery();
-
-            int i = 0;
+            if(resultSet != null) {
+                ids = new ArrayList<>();
+            }
             while (resultSet.next()) {
+                ids.add(resultSet.getLong("weapon_id"));
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        } finally {
+            ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
+        }
+        return ids;
+    }
+
+    @Override
+    public void update(List<Weapon> weapon, List<Long> weaponIds, Long militaryUnitId) {
+        Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
+        String sqlCommandUpdate = "update military_unit_weapon set weapon_id = ?, amount = ? where military_unit_id = ? and weapon_id = ?;";
+        try (PreparedStatement preparedStatementUpdate = connection.prepareStatement(sqlCommandUpdate)) {
+            for(int i = 0; i < weaponIds.size(); i++) {
                 preparedStatementUpdate.setLong(1, weapon.get(i).getWeaponType().getWeaponId());
                 preparedStatementUpdate.setInt(2, weapon.get(i).getAmount());
                 preparedStatementUpdate.setLong(3, militaryUnitId);
-                preparedStatementUpdate.setLong(4, resultSet.getLong("weapon_id"));
+                preparedStatementUpdate.setLong(4, weaponIds.get(i));
                 preparedStatementUpdate.executeUpdate();
-                i++;
             }
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -67,7 +81,7 @@ public class WeaponRepositoryImpl implements IWeaponRepository {
     }
 
     @Override
-    public void insert(Weapon weapon, Long militaryUnitId) {
+    public void create(Weapon weapon, Long militaryUnitId) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommand = "insert into military_unit_weapon(weapon_id, military_unit_id, amount) value(?, ?, ?);";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand)) {

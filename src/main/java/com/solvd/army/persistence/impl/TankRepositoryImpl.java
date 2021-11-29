@@ -17,7 +17,7 @@ public class TankRepositoryImpl implements ITankRepository {
     private final static String SQL_COMMAND = SELECT_COMMAND();
 
     @Override
-    public List<Tank> select(String militaryUnitName) {
+    public List<Tank> getByMilitaryUnitName(String militaryUnitName) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         List<Tank> tanks = new ArrayList<>();
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_COMMAND)) {
@@ -40,24 +40,38 @@ public class TankRepositoryImpl implements ITankRepository {
     }
 
     @Override
-    public void update(List<Tank> tank, Long militaryUnitId) {
+    public List<Long> getId(Long militaryUnitId) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommandSelect = "select tank_id from military_unit_tank where military_unit_id = ?;";
-        String sqlCommandUpdate = "update military_unit_tank set tank_id = ?, amount = ? where military_unit_id = ? and tank_id = ?;";
-        try (PreparedStatement preparedStatementSelect = connection.prepareStatement(sqlCommandSelect);
-             PreparedStatement preparedStatementUpdate = connection.prepareStatement(sqlCommandUpdate)) {
-
+        List<Long> ids = null;
+        try (PreparedStatement preparedStatementSelect = connection.prepareStatement(sqlCommandSelect)) {
             preparedStatementSelect.setLong(1, militaryUnitId);
             ResultSet resultSet = preparedStatementSelect.executeQuery();
-
-            int i = 0;
+            if(resultSet != null) {
+                ids = new ArrayList<>();
+            }
             while (resultSet.next()) {
+                ids.add(resultSet.getLong("tank_id"));
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        } finally {
+            ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
+        }
+        return ids;
+    }
+
+    @Override
+    public void update(List<Tank> tank, List<Long> tankIds, Long militaryUnitId) {
+        Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
+        String sqlCommandUpdate = "update military_unit_tank set tank_id = ?, amount = ? where military_unit_id = ? and tank_id = ?;";
+        try (PreparedStatement preparedStatementUpdate = connection.prepareStatement(sqlCommandUpdate)) {
+            for(int i = 0; i < tankIds.size(); i++) {
                 preparedStatementUpdate.setLong(1, tank.get(i).getTankType().getTankId());
                 preparedStatementUpdate.setInt(2, tank.get(i).getAmount());
                 preparedStatementUpdate.setLong(3, militaryUnitId);
-                preparedStatementUpdate.setLong(4, resultSet.getLong("tank_id"));
+                preparedStatementUpdate.setLong(4, tankIds.get(i));
                 preparedStatementUpdate.executeUpdate();
-                i++;
             }
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -67,7 +81,7 @@ public class TankRepositoryImpl implements ITankRepository {
     }
 
     @Override
-    public void insert(Tank tank, Long militaryUnitId) {
+    public void create(Tank tank, Long militaryUnitId) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommand = "insert into military_unit_tank(tank_id, military_unit_id, amount) value(?, ?, ?);";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand)) {

@@ -18,7 +18,7 @@ public class SoldierRepositoryImpl implements ISoldierRepository {
     private final static String SQL_COMMAND = SELECT_COMMAND();
 
     @Override
-    public List<Soldier> select(String militaryUnitName) {
+    public List<Soldier> getByMilitaryUnitName(String militaryUnitName) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         List<Soldier> soldiers = new ArrayList<>();
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_COMMAND)) {
@@ -51,20 +51,11 @@ public class SoldierRepositoryImpl implements ISoldierRepository {
     }
 
     @Override
-    public void update(Soldier soldier, Long militaryUnitId) {
+    public void updateRecruit(Soldier soldier, Long militaryUnitId) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
-        String sqlCommandSoldier = "update soldiers set rank_id = ?, entered_the_service = ?, end_of_service = ? where military_unit_id = ? and id = ?;";
         String sqlCommandRecruit = "update recruits set first_name = ?, last_name = ?, birthday = ? where id = "
                 + "(select recruit_id from soldiers where id = ?);";
-        try (PreparedStatement preparedStatementSoldier = connection.prepareStatement(sqlCommandSoldier);
-             PreparedStatement preparedStatementRecruit = connection.prepareStatement(sqlCommandRecruit)) {
-            preparedStatementSoldier.setLong(1, soldier.getRank().getRankId());
-            preparedStatementSoldier.setDate(2, Date.valueOf(soldier.getTerm().getEntered()));
-            preparedStatementSoldier.setDate(3, Date.valueOf(soldier.getTerm().getEnd()));
-            preparedStatementSoldier.setLong(4, militaryUnitId);
-            preparedStatementSoldier.setLong(5, soldier.getId());
-            preparedStatementSoldier.executeUpdate();
-
+        try (PreparedStatement preparedStatementRecruit = connection.prepareStatement(sqlCommandRecruit)) {
             preparedStatementRecruit.setString(1, soldier.getFirstName());
             preparedStatementRecruit.setString(2, soldier.getLastName());
             preparedStatementRecruit.setDate(3, Date.valueOf(soldier.getBirthday()));
@@ -78,24 +69,54 @@ public class SoldierRepositoryImpl implements ISoldierRepository {
     }
 
     @Override
-    public void insert(Soldier soldier, Long militaryUnitId) {
+    public void updateSoldier(Soldier soldier, Long militaryUnitId) {
+        Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
+        String sqlCommandSoldier = "update soldiers set rank_id = ?, entered_the_service = ?, end_of_service = ? where military_unit_id = ? and id = ?;";
+
+        try (PreparedStatement preparedStatementSoldier = connection.prepareStatement(sqlCommandSoldier)) {
+            preparedStatementSoldier.setLong(1, soldier.getRank().getRankId());
+            preparedStatementSoldier.setDate(2, Date.valueOf(soldier.getTerm().getEntered()));
+            preparedStatementSoldier.setDate(3, Date.valueOf(soldier.getTerm().getEnd()));
+            preparedStatementSoldier.setLong(4, militaryUnitId);
+            preparedStatementSoldier.setLong(5, soldier.getId());
+            preparedStatementSoldier.executeUpdate();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        } finally {
+            ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
+        }
+    }
+
+    @Override
+    public Long createRecruit(Soldier soldier, Long militaryUnitId) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommandRecruit = "insert into recruits(first_name, last_name, birthday) value(?, ?, ?);";
-        String sqlCommandSoldier = "insert into soldiers(recruit_id, rank_id, military_unit_id, entered_the_service, end_of_service) value(?, ?, ?, ?, ?);";
-        try (PreparedStatement preparedStatementRecruit = connection.prepareStatement(sqlCommandRecruit, Statement.RETURN_GENERATED_KEYS);
-             PreparedStatement preparedStatementSoldier = connection.prepareStatement(sqlCommandSoldier, Statement.RETURN_GENERATED_KEYS)) {
+        Long recruitId = null;
+        try (PreparedStatement preparedStatementRecruit = connection.prepareStatement(sqlCommandRecruit, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatementRecruit.setString(1, soldier.getFirstName());
             preparedStatementRecruit.setString(2, soldier.getLastName());
             preparedStatementRecruit.setDate(3, Date.valueOf(soldier.getBirthday()));
-
             preparedStatementRecruit.executeUpdate();
+
             ResultSet resultSetRecruit = preparedStatementRecruit.getGeneratedKeys();
-            Long recruit_id = null;
             if (resultSetRecruit.next()) {
-                recruit_id = resultSetRecruit.getLong(1);
+                recruitId = resultSetRecruit.getLong(1);
             }
-            if (recruit_id != null) {
-                preparedStatementSoldier.setLong(1, recruit_id);
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        } finally {
+            ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
+        }
+        return recruitId;
+    }
+
+    @Override
+    public void createSoldier(Soldier soldier, Long militaryUnitId, Long recruitId) {
+        Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
+        String sqlCommandSoldier = "insert into soldiers(recruit_id, rank_id, military_unit_id, entered_the_service, end_of_service) value(?, ?, ?, ?, ?);";
+        try (PreparedStatement preparedStatementSoldier = connection.prepareStatement(sqlCommandSoldier, Statement.RETURN_GENERATED_KEYS)) {
+            if (recruitId != null) {
+                preparedStatementSoldier.setLong(1, recruitId);
                 preparedStatementSoldier.setLong(2, soldier.getRank().getRankId());
                 preparedStatementSoldier.setLong(3, militaryUnitId);
                 preparedStatementSoldier.setDate(4, Date.valueOf(soldier.getTerm().getEntered()));

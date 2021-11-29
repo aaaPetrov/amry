@@ -6,10 +6,12 @@ import java.util.List;
 
 public interface IPlaneRepository {
 
-    void insert(Plane plane, Long militaryUnitId);
+    void create(Plane plane, Long militaryUnitId);
 
-    void update(List<Plane> plane, Long militaryUnitId);
+    void update(List<Plane> plane, List<Long> ammoIds, Long militaryUnitId);
 
-    List<Plane> select(String militaryUnitName);
+    List<Plane> getByMilitaryUnitName(String militaryUnitName);
+
+    List<Long> getId(Long militaryUnitId);
 
 }

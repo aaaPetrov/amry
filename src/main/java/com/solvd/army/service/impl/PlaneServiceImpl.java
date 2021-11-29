@@ -1,5 +1,7 @@
 package com.solvd.army.service.impl;
 
+import com.solvd.army.domain.exception.NoDataException;
+import com.solvd.army.domain.resources.Ammo;
 import com.solvd.army.domain.resources.Plane;
 import com.solvd.army.persistence.impl.PlaneRepositoryImpl;
 import com.solvd.army.service.IPlaneService;
@@ -15,20 +17,33 @@ public class PlaneServiceImpl implements IPlaneService {
     }
 
     @Override
-    public List<Plane> select(String militaryUnitName) {
-        return planeRepository.select(militaryUnitName);
+    public List<Plane> getByMilitaryUnitName(String militaryUnitName) {
+        List<Plane> planes = planeRepository.getByMilitaryUnitName(militaryUnitName);
+        if(planes == null) {
+            throw new NoDataException("planeRepository.getByMilitaryUnitName() was returned null-value in PlaneServiceImpl.");
+        }
+        return planes;
     }
 
     @Override
-    public List<Plane> update(List<Plane> plane, Long militaryUnitId) {
-        planeRepository.update(plane, militaryUnitId);
+    public List<Plane> update(List<Plane> plane, List<Long> planeIds, Long militaryUnitId) {
+        planeRepository.update(plane, planeIds, militaryUnitId);
         return plane;
     }
 
     @Override
-    public Plane insert(Plane plane, Long militaryUnitId) {
-        planeRepository.insert(plane, militaryUnitId);
+    public Plane create(Plane plane, Long militaryUnitId) {
+        planeRepository.create(plane, militaryUnitId);
         return plane;
+    }
+
+    @Override
+    public List<Long> getId(Long militaryUnitId) {
+        List<Long> ammoIds = planeRepository.getId(militaryUnitId);
+        if(ammoIds == null) {
+            throw new NoDataException("planeRepository.getId() was returned null-value in PlaneServiceImpl.");
+        }
+        return ammoIds;
     }
 
 }

@@ -6,10 +6,13 @@ import java.util.List;
 
 public interface ITankService {
 
-    Tank insert(Tank tank, Long militaryUnitId);
+    Tank create(Tank tank, Long militaryUnitId);
 
-    List<Tank> update(List<Tank> tank, Long militaryUnitId);
+    List<Tank> update(List<Tank> tank, List<Long> tankIds, Long militaryUnitId);
 
-    List<Tank> select(String militaryUnitName);
+    List<Tank> getByMilitaryUnitName(String militaryUnitName);
+
+    List<Long> getId(Long militaryUnitId);
+
 
 }

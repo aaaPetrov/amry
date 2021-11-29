@@ -34,7 +34,7 @@ public class ArmyRepositoryImpl implements IArmyRepository {
     }
 
     @Override
-    public void insert(Army army) {
+    public void create(Army army) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommand = "insert into armies(country) value(?);";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand, Statement.RETURN_GENERATED_KEYS)) {
@@ -66,7 +66,7 @@ public class ArmyRepositoryImpl implements IArmyRepository {
     }
 
     @Override
-    public Army select(String country) {
+    public Army get(String country) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommand = "select id as army_id, country from armies where country = ?;";
         Army army = null;
@@ -88,7 +88,7 @@ public class ArmyRepositoryImpl implements IArmyRepository {
     }
 
     @Override
-    public List<Army> selectAll() {
+    public List<Army> getAll() {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         List<Army> armies = null;
         try (PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL)) {

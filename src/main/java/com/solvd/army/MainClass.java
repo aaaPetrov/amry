@@ -24,7 +24,7 @@ public class MainClass {
 
         System.out.println("\n\n========================SELECT ALL AND CREATE OBJECTS=================\n\n");
         //SELECT ALL
-        List<Army> armies = armyService.selectAll();
+        List<Army> armies = armyService.getAll();
         System.out.println("Objects was created:\n");
         for (Army army : armies) {
             System.out.println(army.getCountry());
@@ -88,7 +88,7 @@ public class MainClass {
 
         army.setMilitaryUnits(Arrays.asList(militaryUnit1, militaryUnit2));
         //INSERT
-        armyService.insert(army);
+        armyService.create(army);
         System.out.println("Object was inserted:\n");
         System.out.println(army.getCountry());
         for (MilitaryUnit militaryUnit : army.getMilitaryUnits()) {
@@ -186,7 +186,7 @@ public class MainClass {
 
         System.out.println("\n\n========================SELECT UPDATED ARMY AND CREATE OBJECT=================\n\n");
 
-        Army selectedArmy = armyService.select(army.getCountry());
+        Army selectedArmy = armyService.get(army.getCountry());
         System.out.println("New object was created from select(country) after update:\n");
         System.out.println(army.getCountry());
         for (MilitaryUnit militaryUnit : army.getMilitaryUnits()) {

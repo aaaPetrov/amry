@@ -6,10 +6,12 @@ import java.util.List;
 
 public interface IPlaneService {
 
-    Plane insert(Plane plane, Long militaryUnitId);
+    Plane create(Plane plane, Long militaryUnitId);
 
-    List<Plane> update(List<Plane> plane, Long militaryUnitId);
+    List<Plane> update(List<Plane> plane, List<Long> planeIds, Long militaryUnitId);
 
-    List<Plane> select(String militaryUnitName);
+    List<Plane> getByMilitaryUnitName(String militaryUnitName);
+
+    List<Long> getId(Long militaryUnitId);
 
 }

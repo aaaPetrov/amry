@@ -6,12 +6,16 @@ import java.util.List;
 
 public interface ISoldierRepository {
 
-    void insert(Soldier soldier, Long militaryUnitId);
+    void createSoldier(Soldier soldier, Long militaryUnitId, Long recruitId);
 
-    void update(Soldier soldier, Long militaryUnitId);
+    Long createRecruit(Soldier soldier, Long militaryUnitId);
+
+    void updateSoldier(Soldier soldier, Long militaryUnitId);
+
+    void updateRecruit(Soldier soldier, Long militaryUnitId);
 
     void delete(Soldier soldier);
 
-    List<Soldier> select(String militaryUnitName);
+    List<Soldier> getByMilitaryUnitName(String militaryUnitName);
 
 }
