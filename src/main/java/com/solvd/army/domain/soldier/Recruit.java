@@ -1,4 +1,4 @@
-package com.solvd.army.model.soldier;
+package com.solvd.army.domain.soldier;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,6 +10,10 @@ public abstract class Recruit {
     private String lastName;
     private int age;
     private LocalDate birthday;
+
+    protected Recruit() {
+
+    }
 
     protected Recruit(String firstName, String lastName, LocalDate birthday) {
         int age = (int) ChronoUnit.YEARS.between(birthday, LocalDate.now());

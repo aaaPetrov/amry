@@ -1,9 +1,13 @@
-package com.solvd.army.model.resources;
+package com.solvd.army.domain.resources;
 
 public class Ammo {
 
-    private final AmmoType ammoType;
+    private AmmoType ammoType;
     private int amount;
+
+    public Ammo() {
+
+    }
 
     public Ammo(AmmoType ammoType, int amount) {
         this.ammoType = ammoType;
@@ -16,9 +20,11 @@ public class Ammo {
         B_7_62x39("7.62х39mm"), B_7_62x54_R("7.62х54mm R"), B_7_92x57mm("7.92х57mm"),
         B_8_6x70("8.6x70mm");
 
+        private final long ammoId;
         private final String ammoType;
 
         AmmoType(String ammoType) {
+            this.ammoId = this.ordinal() + 1;
             this.ammoType = ammoType;
         }
 
@@ -26,6 +32,14 @@ public class Ammo {
             return ammoType;
         }
 
+        public long getAmmoId() {
+            return ammoId;
+        }
+
+    }
+
+    public void setAmmoType(AmmoType ammoType) {
+        this.ammoType = ammoType;
     }
 
     public AmmoType getAmmoType() {
@@ -39,4 +53,17 @@ public class Ammo {
     public void setAmount(int amount) {
         this.amount = amount;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+        Ammo ammo = (Ammo) obj;
+        return this.getAmmoType().equals(ammo.getAmmoType()) && this.getAmount() == ammo.getAmount();
+    }
+
 }

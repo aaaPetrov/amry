@@ -1,4 +1,5 @@
-package com.solvd.army.model.soldier;
+package com.solvd.army.domain.soldier;
+
 
 import java.time.LocalDate;
 
@@ -6,6 +7,9 @@ public class ServiceTerm {
 
     private LocalDate enteredAt;
     private LocalDate endOn;
+
+    public ServiceTerm() {
+    }
 
     public ServiceTerm(LocalDate enteredAt, LocalDate endOn) {
         this.enteredAt = enteredAt;
@@ -31,6 +35,18 @@ public class ServiceTerm {
 
     public void setEnd(LocalDate endOn) {
         this.endOn = endOn;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+        ServiceTerm serviceTerm = (ServiceTerm) obj;
+        return this.getEntered().equals(serviceTerm.getEntered()) && this.getEnd().equals(serviceTerm.getEnd());
     }
 
 }
