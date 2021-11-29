@@ -2,6 +2,7 @@ package com.solvd.army.persistence.impl;
 
 import com.solvd.army.domain.Army;
 import com.solvd.army.domain.MilitaryUnit;
+import com.solvd.army.domain.exception.ProcessingException;
 import com.solvd.army.persistence.ConnectionPool;
 import com.solvd.army.persistence.IArmyRepository;
 
@@ -26,8 +27,8 @@ public class ArmyRepositoryImpl implements IArmyRepository {
             if (resultSet.next()) {
                 army.setId(resultSet.getLong(1));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException exception) {
+            throw new ProcessingException(exception.getMessage());
         } finally {
             ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
         }
@@ -44,8 +45,8 @@ public class ArmyRepositoryImpl implements IArmyRepository {
             if (resultSet.next()) {
                 army.setId(resultSet.getLong(1));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException exception) {
+            throw new ProcessingException(exception.getMessage());
         } finally {
             ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
         }
@@ -79,8 +80,8 @@ public class ArmyRepositoryImpl implements IArmyRepository {
                 army.setId(resultSet.getLong(1));
                 army.setCountry(resultSet.getString("country"));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException exception) {
+            throw new ProcessingException(exception.getMessage());
         } finally {
             ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
         }
@@ -94,8 +95,8 @@ public class ArmyRepositoryImpl implements IArmyRepository {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             armies = fillArmies(resultSet, armies);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException exception) {
+            throw new ProcessingException(exception.getMessage());
         } finally {
             ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
         }
@@ -115,8 +116,8 @@ public class ArmyRepositoryImpl implements IArmyRepository {
                 List<MilitaryUnit> militaryUnits = MilitaryUnitRepositoryImpl.fillMilitaryUnits(resultSet, armies);
                 army.setMilitaryUnits(militaryUnits);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException exception) {
+            throw new ProcessingException(exception.getMessage());
         }
         return armies;
     }

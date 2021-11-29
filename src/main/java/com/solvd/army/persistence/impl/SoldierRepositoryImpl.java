@@ -1,6 +1,7 @@
 package com.solvd.army.persistence.impl;
 
 import com.solvd.army.domain.MilitaryUnit;
+import com.solvd.army.domain.exception.ProcessingException;
 import com.solvd.army.domain.resources.Ammo;
 import com.solvd.army.domain.soldier.ServiceTerm;
 import com.solvd.army.domain.soldier.Soldier;
@@ -43,7 +44,7 @@ public class SoldierRepositoryImpl implements ISoldierRepository {
                 soldiers.add(newSoldier);
             }
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            throw new ProcessingException(exception.getMessage());
         } finally {
             ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
         }
@@ -81,7 +82,7 @@ public class SoldierRepositoryImpl implements ISoldierRepository {
             preparedStatementSoldier.setLong(5, soldier.getId());
             preparedStatementSoldier.executeUpdate();
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            throw new ProcessingException(exception.getMessage());
         } finally {
             ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
         }
@@ -103,7 +104,7 @@ public class SoldierRepositoryImpl implements ISoldierRepository {
                 recruitId = resultSetRecruit.getLong(1);
             }
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            throw new ProcessingException(exception.getMessage());
         } finally {
             ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
         }
@@ -129,7 +130,7 @@ public class SoldierRepositoryImpl implements ISoldierRepository {
                 }
             }
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            throw new ProcessingException(exception.getMessage());
         } finally {
             ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
         }
@@ -143,8 +144,8 @@ public class SoldierRepositoryImpl implements ISoldierRepository {
             preparedStatement.setString(1, soldier.getFirstName());
             preparedStatement.setString(2, soldier.getLastName());
             preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException exception) {
+            throw new ProcessingException(exception.getMessage());
         } finally {
             ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
         }
@@ -174,8 +175,8 @@ public class SoldierRepositoryImpl implements ISoldierRepository {
                     soldier.setRank(rankType);
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException exception) {
+            throw new ProcessingException(exception.getMessage());
         }
         return soldiers;
     }

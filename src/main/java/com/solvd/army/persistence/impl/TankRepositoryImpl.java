@@ -1,6 +1,7 @@
 package com.solvd.army.persistence.impl;
 
 import com.solvd.army.domain.MilitaryUnit;
+import com.solvd.army.domain.exception.ProcessingException;
 import com.solvd.army.domain.resources.Tank;
 import com.solvd.army.persistence.ConnectionPool;
 import com.solvd.army.persistence.ITankRepository;
@@ -32,7 +33,7 @@ public class TankRepositoryImpl implements ITankRepository {
                 tanks.add(newTank);
             }
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            throw new ProcessingException(exception.getMessage());
         } finally {
             ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
         }
@@ -54,7 +55,7 @@ public class TankRepositoryImpl implements ITankRepository {
                 ids.add(resultSet.getLong("tank_id"));
             }
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            throw new ProcessingException(exception.getMessage());
         } finally {
             ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
         }
@@ -74,7 +75,7 @@ public class TankRepositoryImpl implements ITankRepository {
                 preparedStatementUpdate.executeUpdate();
             }
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            throw new ProcessingException(exception.getMessage());
         } finally {
             ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
         }
@@ -90,7 +91,7 @@ public class TankRepositoryImpl implements ITankRepository {
             preparedStatement.setLong(3, tank.getAmount());
             preparedStatement.executeUpdate();
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            throw new ProcessingException(exception.getMessage());
         } finally {
             ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
         }
@@ -110,8 +111,8 @@ public class TankRepositoryImpl implements ITankRepository {
                     tank.setAmount(resultSet.getInt("amount"));
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException exception) {
+            throw new ProcessingException(exception.getMessage());
         }
         return tanks;
     }

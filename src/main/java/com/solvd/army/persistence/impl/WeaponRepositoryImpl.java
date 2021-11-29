@@ -1,6 +1,7 @@
 package com.solvd.army.persistence.impl;
 
 import com.solvd.army.domain.MilitaryUnit;
+import com.solvd.army.domain.exception.ProcessingException;
 import com.solvd.army.domain.resources.Weapon;
 import com.solvd.army.persistence.ConnectionPool;
 import com.solvd.army.persistence.IWeaponRepository;
@@ -32,7 +33,7 @@ public class WeaponRepositoryImpl implements IWeaponRepository {
                 weapons.add(newWeapon);
             }
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            throw new ProcessingException(exception.getMessage());
         } finally {
             ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
         }
@@ -54,7 +55,7 @@ public class WeaponRepositoryImpl implements IWeaponRepository {
                 ids.add(resultSet.getLong("weapon_id"));
             }
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            throw new ProcessingException(exception.getMessage());
         } finally {
             ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
         }
@@ -74,7 +75,7 @@ public class WeaponRepositoryImpl implements IWeaponRepository {
                 preparedStatementUpdate.executeUpdate();
             }
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            throw new ProcessingException(exception.getMessage());
         } finally {
             ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
         }
@@ -90,7 +91,7 @@ public class WeaponRepositoryImpl implements IWeaponRepository {
             preparedStatement.setLong(3, weapon.getAmount());
             preparedStatement.executeUpdate();
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            throw new ProcessingException(exception.getMessage());
         } finally {
             ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
         }
@@ -110,8 +111,8 @@ public class WeaponRepositoryImpl implements IWeaponRepository {
                     weapon.setAmount(resultSet.getInt("amount"));
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException exception) {
+            throw new ProcessingException(exception.getMessage());
         }
         return weapons;
     }

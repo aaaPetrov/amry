@@ -3,6 +3,7 @@ package com.solvd.army.persistence.impl;
 import com.solvd.army.domain.Army;
 import com.solvd.army.domain.Location;
 import com.solvd.army.domain.MilitaryUnit;
+import com.solvd.army.domain.exception.ProcessingException;
 import com.solvd.army.domain.resources.Ammo;
 import com.solvd.army.domain.resources.Plane;
 import com.solvd.army.domain.resources.Tank;
@@ -36,8 +37,8 @@ public class MilitaryUnitRepositoryImpl implements IMilitaryUnitRepository {
                 newMilitaryUnit.setLocation(location);
                 militaryUnits.add(newMilitaryUnit);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException exception) {
+            throw new ProcessingException(exception.getMessage());
         } finally {
             ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
         }
@@ -57,7 +58,7 @@ public class MilitaryUnitRepositoryImpl implements IMilitaryUnitRepository {
             preparedStatement.setLong(5, militaryUnit.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            throw new ProcessingException(exception.getMessage());
         } finally {
             ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
         }
@@ -80,7 +81,7 @@ public class MilitaryUnitRepositoryImpl implements IMilitaryUnitRepository {
                 militaryUnit.setId(resultSet.getLong(1));
             }
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            throw new ProcessingException(exception.getMessage());
         } finally {
             ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
         }
@@ -117,8 +118,8 @@ public class MilitaryUnitRepositoryImpl implements IMilitaryUnitRepository {
                     militaryUnit.setSoldiers(soldiers);
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException exception) {
+            throw new ProcessingException(exception.getMessage());
         }
         return militaryUnits;
     }

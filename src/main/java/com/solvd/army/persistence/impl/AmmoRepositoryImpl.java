@@ -1,6 +1,7 @@
 package com.solvd.army.persistence.impl;
 
 import com.solvd.army.domain.MilitaryUnit;
+import com.solvd.army.domain.exception.ProcessingException;
 import com.solvd.army.domain.resources.Ammo;
 import com.solvd.army.persistence.ConnectionPool;
 import com.solvd.army.persistence.IAmmoRepository;
@@ -29,7 +30,7 @@ public class AmmoRepositoryImpl implements IAmmoRepository {
                 ammunition.add(newAmmo);
             }
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            throw new ProcessingException(exception.getMessage());
         } finally {
             ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
         }
@@ -51,7 +52,7 @@ public class AmmoRepositoryImpl implements IAmmoRepository {
                 ids.add(resultSet.getLong("ammo_id"));
             }
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            throw new ProcessingException(exception.getMessage());
         } finally {
             ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
         }
@@ -71,7 +72,7 @@ public class AmmoRepositoryImpl implements IAmmoRepository {
                 preparedStatementUpdate.executeUpdate();
             }
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            throw new ProcessingException(exception.getMessage());
         } finally {
             ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
         }
@@ -87,7 +88,7 @@ public class AmmoRepositoryImpl implements IAmmoRepository {
             preparedStatement.setInt(3, ammo.getAmount());
             preparedStatement.executeUpdate();
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            throw new ProcessingException(exception.getMessage());
         } finally {
             ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
         }
@@ -107,8 +108,8 @@ public class AmmoRepositoryImpl implements IAmmoRepository {
                     ammo.setAmount(resultSet.getInt("amount"));
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException exception) {
+            throw new ProcessingException(exception.getMessage());
         }
         return ammunnition;
     }
