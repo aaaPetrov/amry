@@ -35,9 +35,9 @@ insert into military_units(army_id, name, longitude, latitude)
 value(3, 'ukrainian_unit_4', 48.778728, 22.703077);
 
 insert into tanks(type)
-values('2С25 Sproot-CD'), ('2С31 Vena'), ('BMD-4'), ('BMD-4M'),
-('BTR-90'), ('BTR-MD'), ('T-14 Armata'), ('T-15'), ('T-90'),
-('T-95 Object'), ('TOC-1 Pinocchio'), ('TOC-1A Sunfire'), ('Black Eagle');
+values('T_2C25'), ('T_2C31'), ('BMD_4'), ('BMD_4M'),
+('BTR_90'), ('BTR_MD'), ('T_14'), ('T_15'), ('T_90'),
+('T_95'), ('TOC_1'), ('TOC_1A'), ('BLACK_EAGLE');
 
 insert into military_unit_tank(tank_id, military_unit_id, amount)
 values(1, 1, 10), (2, 1, 15), (7, 1, 4), (2, 2, 3), (3, 2, 12), (10, 2, 3),
@@ -48,8 +48,8 @@ values(1, 1, 10), (2, 1, 15), (7, 1, 4), (2, 2, 3), (3, 2, 12), (10, 2, 3),
 (10, 11, 4), (7, 11, 12), (1, 11, 3), (2, 12, 17), (9, 12, 7), (12, 12, 12);
 
 insert into planes(type)
-values('MiG-35'), ('Cy-57'), ('Ty-160'), ('Cy-25'),
-('Cy-35C'), ('Cy-47'), ('Ty-22M3'), ('An-124'), ('B-52');
+values('MIG_35'), ('CY_57'), ('TY_160'), ('CY_25'),
+('CY_35C'), ('CY_47'), ('TY_22M3'), ('AN_124'), ('B_52');
 
 insert into military_unit_plane(plane_id, military_unit_id, amount)
 values(1, 1, 10), (2, 1, 15), (7, 1, 4), (2, 2, 3), (3, 2, 12), (9, 2, 3),
@@ -60,10 +60,10 @@ values(1, 1, 10), (2, 1, 15), (7, 1, 4), (2, 2, 3), (3, 2, 12), (9, 2, 3),
 (5, 11, 4), (7, 11, 12), (1, 11, 3), (2, 12, 17), (9, 12, 7), (6, 12, 12);
 
 insert into weapons(type)
-values('P.APS'), ('P.SPS'), ('P.MR-444'), ('P.MP-448'), ('P.P-96'), ('A.AKM'), 
-('A.AK-47'), ('A.AK-74M'), ('A.9A91'), ('A.A-91M'), ('SR.SVD'), ('SR.SVY_AS'),
-('SR.SV-98'), ('SR.OSV-96'), ('SR.ASVK'), ('MG.RPK'), ('MG.PK'), ('MG.PKM'), ('MG.PKMT'),
-('MG.PKMB'), ('MG.KPV'), ('GL.GP-25'), ('GL.6G30'), ('GL.GM-94'), ('GL.RMG'), ('GL.RPG26'), ('GL.RPG32');
+values('P_APS'), ('P_SPS'), ('P_MR_444'), ('P_MP_448'), ('P_P_96'), ('A_AKM'), 
+('A_AK_47'), ('A_AK_74M'), ('A_9A91'), ('A_A_91M'), ('SR_SVD'), ('SR_SVY_AS'),
+('SR_SV_98'), ('SR_OSV_96'), ('SR_ASVK'), ('MG_RPK'), ('MG_PK'), ('MG_PKM'), ('MG_PKMT'),
+('MG_PKMB'), ('MG_KPV'), ('GL_GP_25'), ('GL_6G30'), ('GL_GM_94'), ('GL_RMG'), ('GL_RPG_26'), ('GL_RPG_32');
 
 insert into military_unit_weapon(weapon_id, military_unit_id, amount)
 values(3, 1, 30), (6, 1, 45), (21, 1, 12), (6, 2, 9), (9, 2, 36), (27, 2, 9),
@@ -74,8 +74,8 @@ values(3, 1, 30), (6, 1, 45), (21, 1, 12), (6, 2, 9), (9, 2, 36), (27, 2, 9),
 (15, 11, 12), (21, 11, 36), (3, 11, 9), (6, 12, 51), (27, 12, 21), (18, 12, 36);
 
 insert into ammo(type)
-values('5.45х39mm'), ('5.56х45mm'), ('6х51mm'), ('7.62х39mm'),
-('7.62х54mm R'), ('7.92х57mm'), ('8.6x70mm');
+values('B_5_45x39'), ('B_5_56x45'), ('B_6x51'), ('B_7_62x39'),
+('B_7_62x54_R'), ('B_7_92x57mm'), ('B_8_6x70');
 
 insert into military_unit_ammo(ammo_id, military_unit_id, amount)
 values(2, 1, 30000), (4, 1, 45000), (7, 1, 12000), (6, 2, 9000), (5, 2, 36000), (3, 2, 9000),
@@ -86,10 +86,10 @@ values(2, 1, 30000), (4, 1, 45000), (7, 1, 12000), (6, 2, 9000), (5, 2, 36000), 
 (5, 11, 12000), (3, 11, 36000), (4, 11, 9000), (6, 12, 51000), (7, 12, 21000), (4, 12, 36);
 
 insert into ranks(type)
-values('Squaddie'), ('Corporal'), ('Lance-sergeant'), ('Sergeant'), ('Staff-sergeant'),
-('Senior-sergeant'), ('Warrant'), ('Senior-warrant'), ('Sublieutenant'), ('Lieutenant'),
-('Senior-lieutenant'), ('Captain'), ('Major'), ('Lieutenant-colonel'), ('Colonel'),
-('Major-general'), ('Lieutenant-general'), ('Colonel-general');
+values('SQUADDIE'), ('CORPORAL'), ('LANCE_SERGEANT'), ('SERGEANT'), ('STAFF_SERGEANT'),
+('SENIOR_SERGEANT'), ('WARRANT'), ('SENIOR_WARRANT'), ('SUBLIEUTENANT'), ('LIEUTENANT'),
+('SENIOR_LIEUTENANT'), ('CAPTAIN'), ('MAJOR'), ('LIEUTENANT_COLONEL'), ('COLONEL'),
+('MAJOR_GENERAL'), ('LIEUTENANT_GENERAL'), ('COLONEL_GENERAL');
 
 insert into recruits(first_name, last_name, birthday)
 values('Artem', 'Petrov', str_to_date('03-05-1993', '%d-%m-%Y')),

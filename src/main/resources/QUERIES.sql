@@ -1,6 +1,80 @@
 # Используем базу данных army.
 use army;
 
+
+------------------------
+select * from armies;
+select * from military_units;
+select * from recruits;
+select * from soldiers;
+select * from military_unit_ammo;
+
+delete from armies where country = 'INSERTED';
+delete from armies where country = 'UPDATED';
+delete from military_units where name = 'INSERTED_UNIT1' or name = 'INSERTED_UNIT2';
+delete from military_units where name = 'UPDATED_UNIT1' or name = 'UPDATED_UNIT2';
+delete from recruits where first_name = 'A_INSERTED' or first_name = 'B_INSERTED' or first_name = 'C_INSERTED' or first_name = 'D_INSERTED';
+delete from recruits where first_name = 'A_UPDATED' or first_name = 'B_UPDATED' or first_name = 'C_UPDATED' or first_name = 'D_UPDATED';
+------------------------
+
+
+select A.id as army_id, A.country, M.army_id as military_unit_army_id, M.id military_unit_id, M.name, M.latitude, M.longitude,
+AM.id as ammo_id, AM.type, MAM.ammo_id as military_unit_ammo_id, MAM.military_unit_id as military_unit_ammo_military_unit_id, MAM.amount
+from armies as A
+inner join military_units as M on A.id = M.army_id
+inner join military_unit_ammo as MAM on M.id = MAM.military_unit_id
+inner join ammo as AM on MAM.ammo_id = AM.id;
+
+select A.id as army_id, A.country, M.army_id as military_unit_army_id, M.id military_unit_id, M.name, M.latitude, M.longitude,
+W.id as weapon_id, W.type, MAW.weapon_id as millitary_unit_weapon_id, MAW.military_unit_id as millitary_unit_weapon_millitary_unit_id, MAW.amount
+from armies as A
+inner join military_units as M on A.id = M.army_id
+inner join military_unit_weapon as MAW on M.id = MAW.military_unit_id
+inner join weapons as W on MAW.weapon_id = W.id;
+
+select A.id as army_id, A.country, M.army_id as military_unit_army_id, M.id military_unit_id, M.name, M.latitude, M.longitude,
+T.id as tank_id, T.type, MAT.tank_id as millitary_unit_tank_id, MAT.military_unit_id as millitary_unit_tank_millitary_unit_id, MAT.amount
+from armies as A
+inner join military_units as M on A.id = M.army_id
+inner join military_unit_tank as MAT on M.id = MAT.military_unit_id
+inner join tanks as T on MAT.tank_id = T.id;
+
+select A.id as army_id, A.country, M.army_id as military_unit_army_id, M.id military_unit_id, M.name, M.latitude, M.longitude,
+P.id as plane_id, P.type, MAP.plane_id as millitary_unit_plane_id, MAP.military_unit_id as millitary_unit_plane_millitary_unit_id, MAP.amount
+from armies as A
+inner join military_units as M on A.id = M.army_id
+inner join military_unit_plane as MAP on M.id = MAP.military_unit_id
+inner join planes as P on MAP.plane_id = P.id;
+
+select A.id as army_id, A.country, M.army_id as military_unit_army_id, M.id military_unit_id, M.name, M.latitude, M.longitude,
+REC.id as recruit_id, S.id, S.recruit_id as soldier_recruit_id, S.military_unit_id as soldier_military_unit_id, REC.first_name, REC.last_name, REC.birthday, R.id, R.type, S.entered_the_service, S.end_of_service
+from armies as A
+inner join military_units as M on A.id = M.army_id
+inner join soldiers as S on M.id = S.military_unit_id
+inner join recruits as REC on S.recruit_id = REC.id
+inner join ranks as R on S.rank_id = R.id;
+------------------------
+
+select A.id as army_id, A.country, M.army_id as military_unit_army_id, M.id military_unit_id, M.name, M.latitude, M.longitude,
+AM.id as ammo_id, AM.type as ammo_type, MAM.ammo_id as millitary_unit_ammo_id, MAM.military_unit_id as millitary_unit_ammo_millitary_unit_id, MAM.amount,
+W.id as weapon_id, W.type as weapon_type, MAW.weapon_id as millitary_unit_weapon_id, MAW.military_unit_id as millitary_unit_weapon_millitary_unit_id, MAW.amount,
+T.id as tank_id, T.type as tank_type, MAT.tank_id as millitary_unit_tank_id, MAT.military_unit_id as millitary_unit_tank_millitary_unit_id, MAT.amount,
+P.id as plane_id, P.type as plane_type, MAP.plane_id as millitary_unit_plane_id, MAP.military_unit_id as millitary_unit_plane_millitary_unit_id, MAP.amount,
+REC.id as recruit_id, S.id as soldier_id, S.recruit_id as soldier_recruit_id, S.military_unit_id as soldier_military_unit_id, REC.first_name, REC.last_name, REC.birthday, R.id as rank_type_id, R.type as rank_type, S.entered_the_service, S.end_of_service
+from armies as A
+inner join military_units as M on A.id = M.army_id
+inner join military_unit_ammo as MAM on M.id = MAM.military_unit_id
+inner join military_unit_weapon as MAW on M.id = MAW.military_unit_id
+inner join military_unit_tank as MAT on M.id = MAT.military_unit_id
+inner join military_unit_plane as MAP on M.id = MAP.military_unit_id
+inner join soldiers as S on M.id = S.military_unit_id
+inner join ammo as AM on MAM.ammo_id = AM.id
+inner join weapons as W on MAW.weapon_id = W.id
+inner join tanks as T on MAT.tank_id = T.id
+inner join planes as P on MAP.plane_id = P.id
+inner join recruits as REC on S.recruit_id = REC.id
+inner join ranks as R on S.rank_id = R.id;
+
 #UPDATE
 
 update military_unit_ammo set amount = 18000 where ammo_id like 3 and military_unit_id like 3;
