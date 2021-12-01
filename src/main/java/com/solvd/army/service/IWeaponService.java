@@ -8,7 +8,7 @@ public interface IWeaponService {
 
     Weapon create(Weapon weapon, Long militaryUnitId);
 
-    List<Weapon> update(List<Weapon> weapon, List<Long> weaponIds, Long militaryUnitId);
+    Weapon update(Weapon weapon, Long weaponId, Long militaryUnitId);
 
     List<Weapon> getByMilitaryUnitName(String militaryUnitName);
 

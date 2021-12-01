@@ -8,7 +8,7 @@ public interface IAmmoService {
 
     Ammo create(Ammo ammo, Long militaryUnitId);
 
-    List<Ammo> update(List<Ammo> ammo, List<Long> ammoIds, Long militaryUnitId);
+    Ammo update(Ammo ammo, Long ammoId, Long militaryUnitId);
 
     List<Ammo> getByMilitaryUnitName(String militaryUnitName);
 

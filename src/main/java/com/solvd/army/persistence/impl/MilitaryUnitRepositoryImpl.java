@@ -18,7 +18,6 @@ import java.util.List;
 
 public class MilitaryUnitRepositoryImpl implements IMilitaryUnitRepository {
 
-
     @Override
     public List<MilitaryUnit> get(String country) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
@@ -50,7 +49,7 @@ public class MilitaryUnitRepositoryImpl implements IMilitaryUnitRepository {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommand = "update military_units set name = ?, longitude = ?, latitude = ? where army_id = ? and id = ?;";
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand)) {
             preparedStatement.setString(1, militaryUnit.getName());
             preparedStatement.setDouble(2, militaryUnit.getLocation().getLongitude());
             preparedStatement.setDouble(3, militaryUnit.getLocation().getLatitude());

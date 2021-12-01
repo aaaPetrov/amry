@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.army.persistence.IWeaponRepository">
+
+    <insert id="create" useGeneratedKeys="false">
+        insert into military_unit_weapon(weapon_id, military_unit_id, amount)
+        value(#{weapon.weaponType.weaponId}, #{militaryUnitId}, #{weapon.amount});
+    </insert>
+
+    <update id="update" useGeneratedKeys="false">
+        update military_unit_weapon set weapon_id= ${weapon.weaponType.weaponId}, amount = ${weapon.amount}
+        where
+        military_unit_id = ${militaryUnitId} and weapon_id = ${weaponId};
+    </update>
+
+    <select id="getId" resultType="java.lang.Long">
+        select weapon_id from military_unit_weapon where military_unit_id = #{militaryUnitId};
+    </select>
+
+    <select id="getByMilitaryUnitName" resultMap="GetWeaponsResultMap">
+        select
+        MUW.weapon_id as military_unit_weapon_weapon_id,
+        MUW.military_unit_id as military_unit_weapon_military_unit_id,
+        MUW.amount as military_unit_weapon_amount,
+        W.id as weapon_id,
+        W.type as weapon_type
+        from military_unit_weapon as MUW
+        inner join weapons as W on MUW.weapon_id = W.id
+        where MUW.military_unit_id =
+        (select id from military_units where name = #{militaryUnitName});
+    </select>
+
+    <resultMap id="GetWeaponsResultMap" type="com.solvd.army.domain.resources.Weapon" autoMapping="false">
+        <result property="weaponType" column="weapon_type"/>
+        <result property="amount" column="military_unit_weapon_amount"/>
+    </resultMap>
+
+    <resultMap id="GetAllWeaponsResultMap" type="com.solvd.army.domain.resources.Weapon" autoMapping="false">
+        <result property="weaponType" column="weapon_type"/>
+        <result property="amount" column="military_unit_weapon_amount"/>
+    </resultMap>
+
+    <sql id="SelectColumns">
+        W.id as weapon_id,
+        W.type as weapon_type,
+        MAW.weapon_id as military_unit_weapon_weapon_id,
+        MAW.military_unit_id as military_unit_weapon_military_unit_id,
+        MAW.amount as military_unit_weapon_amount,
+    </sql>
+
+</mapper>

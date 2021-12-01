@@ -7,6 +7,7 @@ import com.solvd.army.domain.resources.Plane;
 import com.solvd.army.domain.resources.Tank;
 import com.solvd.army.domain.resources.Weapon;
 import com.solvd.army.domain.soldier.Soldier;
+import com.solvd.army.persistence.IMilitaryUnitRepository;
 import com.solvd.army.persistence.impl.*;
 import com.solvd.army.service.IMilitaryUnitService;
 
@@ -15,7 +16,7 @@ import java.util.List;
 
 public class MilitaryUnitServiceImpl implements IMilitaryUnitService {
 
-    private final MilitaryUnitRepositoryImpl militaryUnitRepository;
+    private final IMilitaryUnitRepository militaryUnitRepository;
     private final AmmoServiceImpl ammoService;
     private final WeaponServiceImpl weaponService;
     private final TankServiceImpl tankService;
@@ -24,7 +25,8 @@ public class MilitaryUnitServiceImpl implements IMilitaryUnitService {
 
 
     public MilitaryUnitServiceImpl() {
-        militaryUnitRepository = new MilitaryUnitRepositoryImpl();
+        /*militaryUnitRepository = new MilitaryUnitRepositoryImpl();*/
+        militaryUnitRepository = new MilitaryUnitMapperImpl();
         ammoService = new AmmoServiceImpl();
         weaponService = new WeaponServiceImpl();
         tankService = new TankServiceImpl();
@@ -37,31 +39,40 @@ public class MilitaryUnitServiceImpl implements IMilitaryUnitService {
         militaryUnitRepository.update(militaryUnit, armyId);
         if (militaryUnit.getAmmunition() != null) {
             List<Long> ammoIds = ammoService.getId(militaryUnit.getId());
-            if(ammoIds == null) {
+            if (ammoIds == null) {
                 throw new NoDataException("ammoService.getId() was returned null-value in MilitaryUnitServiceImpl.");
             }
-            ammoService.update(militaryUnit.getAmmunition(), ammoIds, militaryUnit.getId());
+            for (Ammo ammo : militaryUnit.getAmmunition()) {
+                ammoService.update(ammo, ammoIds.remove(0), militaryUnit.getId());
+            }
         }
         if (militaryUnit.getWeapons() != null) {
             List<Long> weaponIds = weaponService.getId(militaryUnit.getId());
-            if(weaponIds == null) {
+            if (weaponIds == null) {
                 throw new NoDataException("weaponService.getId() was returned null-value in MilitaryUnitServiceImpl.");
             }
-            weaponService.update(militaryUnit.getWeapons(), weaponIds, militaryUnit.getId());
+            for (Weapon weapon : militaryUnit.getWeapons()) {
+                weaponService.update(weapon, weaponIds.remove(0), militaryUnit.getId());
+            }
+
         }
         if (militaryUnit.getTanks() != null) {
             List<Long> tankIds = tankService.getId(militaryUnit.getId());
-            if(tankIds == null) {
+            if (tankIds == null) {
                 throw new NoDataException("tankService.getId() was returned null-value in MilitaryUnitServiceImpl.");
             }
-            tankService.update(militaryUnit.getTanks(), tankIds, militaryUnit.getId());
+            for (Tank tank : militaryUnit.getTanks()) {
+                tankService.update(tank, tankIds.remove(0), militaryUnit.getId());
+            }
         }
         if (militaryUnit.getPlanes() != null) {
             List<Long> planeIds = planeService.getId(militaryUnit.getId());
-            if(planeIds == null) {
+            if (planeIds == null) {
                 throw new NoDataException("planeService.getId() was returned null-value in MilitaryUnitServiceImpl.");
             }
-            planeService.update(militaryUnit.getPlanes(), planeIds, militaryUnit.getId());
+            for (Plane plane : militaryUnit.getPlanes()) {
+                planeService.update(plane, planeIds.remove(0), militaryUnit.getId());
+            }
         }
         if (militaryUnit.getSoldiers() != null) {
             for (Soldier soldier : militaryUnit.getSoldiers()) {
@@ -106,7 +117,7 @@ public class MilitaryUnitServiceImpl implements IMilitaryUnitService {
     @Override
     public List<MilitaryUnit> get(String country) {
         List<MilitaryUnit> militaryUnits = militaryUnitRepository.get(country);
-        if(militaryUnits == null) {
+        if (militaryUnits == null) {
             throw new NoDataException("militaryUnitRepository.get() was returned null-value in MilitaryUnitServiceImpl.");
         }
         for (MilitaryUnit militaryUnit : militaryUnits) {
@@ -115,15 +126,15 @@ public class MilitaryUnitServiceImpl implements IMilitaryUnitService {
             List<Tank> tanks = tankService.getByMilitaryUnitName(militaryUnit.getName());
             List<Plane> planes = planeService.getByMilitaryUnitName(militaryUnit.getName());
             List<Soldier> soldiers = soldierService.getByMilitaryUnitName(militaryUnit.getName());
-            if(ammunition == null) {
+            if (ammunition == null) {
                 throw new NoDataException("ammoService.getByMilitaryUnitName() was returned null-value in MilitaryUnitServiceImpl.");
-            } else if(ammunition == null) {
+            } else if (weapons == null) {
                 throw new NoDataException("weaponService.getByMilitaryUnitName() was returned null-value in MilitaryUnitServiceImpl.");
-            } else if(ammunition == null) {
+            } else if (tanks == null) {
                 throw new NoDataException("tankService.getByMilitaryUnitName() was returned null-value in MilitaryUnitServiceImpl.");
-            } else if(ammunition == null) {
+            } else if (planes == null) {
                 throw new NoDataException("planeService.getByMilitaryUnitName() was returned null-value in MilitaryUnitServiceImpl.");
-            } else if(ammunition == null) {
+            } else if (soldiers == null) {
                 throw new NoDataException("soldierService.getByMilitaryUnitName() was returned null-value in MilitaryUnitServiceImpl.");
             }
             militaryUnit.setAmmunition(ammunition);

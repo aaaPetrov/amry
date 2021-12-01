@@ -1,25 +1,26 @@
 package com.solvd.army.service.impl;
 
 import com.solvd.army.domain.exception.NoDataException;
-import com.solvd.army.domain.resources.Ammo;
 import com.solvd.army.domain.soldier.Soldier;
-import com.solvd.army.persistence.impl.SoldierRepositoryImpl;
+import com.solvd.army.persistence.ISoldierRepository;
+import com.solvd.army.persistence.impl.SolderMapperImpl;
 import com.solvd.army.service.ISoldierService;
 
 import java.util.List;
 
 public class SoldierServiceImpl implements ISoldierService {
 
-    private final SoldierRepositoryImpl soldierRepository;
+    private final ISoldierRepository soldierRepository;
 
     public SoldierServiceImpl() {
-        soldierRepository = new SoldierRepositoryImpl();
+        /*soldierRepository = new SoldierRepositoryImpl();*/
+        soldierRepository = new SolderMapperImpl();
     }
 
     @Override
     public List<Soldier> getByMilitaryUnitName(String militaryUnitName) {
         List<Soldier> soldiers = soldierRepository.getByMilitaryUnitName(militaryUnitName);
-        if(soldiers == null) {
+        if (soldiers == null) {
             throw new NoDataException("soldierRepository.getByMilitaryUnitName() was returned null-value in SoldierServiceImpl.");
         }
         return soldiers;
@@ -32,11 +33,8 @@ public class SoldierServiceImpl implements ISoldierService {
 
     @Override
     public Soldier createSoldier(Soldier soldier, Long militaryUnitId) {
-        Long recruitId = soldierRepository.createRecruit(soldier, militaryUnitId);
-        if(recruitId == null) {
-            throw new NoDataException("soldierRepository.createRecruit() was returned null-value in SoldierServiceImpl.");
-        }
-        soldierRepository.createSoldier(soldier, militaryUnitId, recruitId);
+        soldierRepository.createRecruit(soldier, militaryUnitId);
+        soldierRepository.createSoldier(soldier, militaryUnitId);
         return soldier;
     }
 
@@ -48,7 +46,7 @@ public class SoldierServiceImpl implements ISoldierService {
 
     @Override
     public Soldier updateSoldier(Soldier soldier, Long militaryUnitId) {
-        soldierRepository.updateSoldier(soldier,militaryUnitId);
+        soldierRepository.updateSoldier(soldier, militaryUnitId);
         return soldier;
     }
 

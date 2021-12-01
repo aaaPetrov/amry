@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.army.persistence.IArmyRepository">
+
+    <insert id="create" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+        insert into armies(country) value(#{country});
+    </insert>
+
+    <update id="update" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+        update armies set country = #{country} where id = #{id};
+    </update>
+
+    <delete id="delete">
+        delete from armies where country = #{country};
+    </delete>
+
+    <select id="get" resultMap="GetArmyResultMap">
+        select
+        id as army_id,
+        country as army_country
+        from armies
+        where country = #{country};
+    </select>
+    
+    <select id="getAll" resultMap="GetAllArmyResultMap">
+        select
+        A.id as army_id,
+        A.country as army_country,
+        <include refid="com.solvd.army.persistence.IMilitaryUnitRepository.SelectColumns"/>
+        <include refid="com.solvd.army.persistence.IAmmoRepository.SelectColumns"/>
+        <include refid="com.solvd.army.persistence.IWeaponRepository.SelectColumns"/>
+        <include refid="com.solvd.army.persistence.ITankRepository.SelectColumns"/>
+        <include refid="com.solvd.army.persistence.IPlaneRepository.SelectColumns"/>
+        <include refid="com.solvd.army.persistence.ISoldierRepository.SelectColumns"/>
+        from armies as A
+        <include refid="com.solvd.army.persistence.IArmyRepository.GetAllJoins"/>
+    </select>
+
+    <resultMap id="GetArmyResultMap" type="com.solvd.army.domain.Army" autoMapping="false">
+        <id property="id" column="army_id"/>
+        <result property="country" column="army_country"/>
+    </resultMap>
+    
+    <resultMap id="GetAllArmyResultMap" type="com.solvd.army.domain.Army" autoMapping="false">
+        <id property="id" column="army_id"/>
+        <result property="country" column="army_country"/>
+        <collection property="militaryUnits" resultMap="com.solvd.army.persistence.IMilitaryUnitRepository.GetAllMilitaryUnitMap"/>
+    </resultMap>
+
+    <sql id="GetAllJoins">
+        inner join military_units as M on A.id = M.army_id
+        inner join military_unit_ammo as MAM on M.id = MAM.military_unit_id
+        inner join military_unit_weapon as MAW on M.id = MAW.military_unit_id
+        inner join military_unit_tank as MAT on M.id = MAT.military_unit_id
+        inner join military_unit_plane as MAP on M.id = MAP.military_unit_id
+        inner join soldiers as S on M.id = S.military_unit_id
+        inner join ammo as AM on MAM.ammo_id = AM.id
+        inner join weapons as W on MAW.weapon_id = W.id
+        inner join tanks as T on MAT.tank_id = T.id
+        inner join planes as P on MAP.plane_id = P.id
+        inner join recruits as REC on S.recruit_id = REC.id
+        inner join ranks as R on S.rank_id = R.id;
+    </sql>
+    
+</mapper>

@@ -31,23 +31,14 @@ public class Soldier extends Recruit {
 
     public enum Rank {
 
-        SQUADDIE("Squaddie"), CORPORAL("Corporal"), LANCE_SERGEANT("Lance-sergeant"), SERGEANT("Sergeant"),
-        STAFF_SERGEANT("Staff-sergeant"), SENIOR_SERGEANT("Senior-sergeant"), WARRANT("Warrant"),
-        SENIOR_WARRANT("Senior-warrant"), SUBLIEUTENANT("Sublieutenant"), LIEUTENANT("Lieutenant"),
-        SENIOR_LIEUTENANT("Senior-lieutenant"), CAPTAIN("Captain"), MAJOR("Major"),
-        LIEUTENANT_COLONEL("Lieutenant-colonel"), COLONEL("Colonel"), MAJOR_GENERAL("Major-general"),
-        LIEUTENANT_GENERAL("Lieutenant-general"), COLONEL_GENERAL("Colonel-general");
+        SQUADDIE, CORPORAL, LANCE_SERGEANT, SERGEANT, STAFF_SERGEANT, SENIOR_SERGEANT, WARRANT,
+        SENIOR_WARRANT, SUBLIEUTENANT, LIEUTENANT, SENIOR_LIEUTENANT, CAPTAIN, MAJOR,
+        LIEUTENANT_COLONEL, COLONEL, MAJOR_GENERAL, LIEUTENANT_GENERAL, COLONEL_GENERAL;
 
-        private final String rank;
         private final long rankId;
 
-        Rank(String rank) {
+        Rank() {
             this.rankId = this.ordinal() + 1;
-            this.rank = rank;
-        }
-
-        public String getRank() {
-            return rank;
         }
 
         public long getRankId() {

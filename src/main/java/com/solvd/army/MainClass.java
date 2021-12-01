@@ -199,8 +199,9 @@ public class MainClass {
         System.out.println("\n\n========================DELETE UPDATED ARMY=================\n\n");
         if (army.equals(selectedArmy)) {
             System.out.println("object \"army\" was inserted, then updated.");
-            System.out.println("Then data was selected by select(String country) in object \"selectedArmy\".");
-            System.out.println("army  and selectedArmy are equals.");
+            System.out.println("Then data was selected by select(String country) in new object \"selectedArmy\".");
+            System.out.println("\"army\"  and \"selectedArmy\" are equals.");
+            System.out.println("\nNow object \"army\" was deleted.");
             armyService.delete(army);
         }
     }

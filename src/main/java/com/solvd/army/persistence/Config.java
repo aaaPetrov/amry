@@ -23,7 +23,7 @@ public final class Config {
         File fromFile = new File("./config.properties");
         String value = null;
         try {
-            InputStream inputStream = Files.newInputStream(Paths.get("./config.properties"));
+            InputStream inputStream = Files.newInputStream(Paths.get("./src/main/resources/config.properties"));
             Properties property = new Properties();
             property.load(inputStream);
             value = property.getProperty(forVariable);

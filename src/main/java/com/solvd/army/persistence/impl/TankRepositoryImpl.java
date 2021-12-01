@@ -27,7 +27,7 @@ public class TankRepositoryImpl implements ITankRepository {
 
             while (resultSet.next()) {
                 Tank newTank = new Tank();
-                Tank.TankType tankType = tankTypeByString(resultSet.getString("type"));
+                Tank.TankType tankType = Tank.TankType.valueOf(resultSet.getString("type"));
                 newTank.setTankType(tankType);
                 newTank.setAmount(resultSet.getInt("amount"));
                 tanks.add(newTank);
@@ -48,7 +48,7 @@ public class TankRepositoryImpl implements ITankRepository {
         try (PreparedStatement preparedStatementSelect = connection.prepareStatement(sqlCommandSelect)) {
             preparedStatementSelect.setLong(1, militaryUnitId);
             ResultSet resultSet = preparedStatementSelect.executeQuery();
-            if(resultSet != null) {
+            if (resultSet != null) {
                 ids = new ArrayList<>();
             }
             while (resultSet.next()) {
@@ -63,17 +63,15 @@ public class TankRepositoryImpl implements ITankRepository {
     }
 
     @Override
-    public void update(List<Tank> tank, List<Long> tankIds, Long militaryUnitId) {
+    public void update(Tank tank, Long tankId, Long militaryUnitId) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommandUpdate = "update military_unit_tank set tank_id = ?, amount = ? where military_unit_id = ? and tank_id = ?;";
         try (PreparedStatement preparedStatementUpdate = connection.prepareStatement(sqlCommandUpdate)) {
-            for(int i = 0; i < tankIds.size(); i++) {
-                preparedStatementUpdate.setLong(1, tank.get(i).getTankType().getTankId());
-                preparedStatementUpdate.setInt(2, tank.get(i).getAmount());
-                preparedStatementUpdate.setLong(3, militaryUnitId);
-                preparedStatementUpdate.setLong(4, tankIds.get(i));
-                preparedStatementUpdate.executeUpdate();
-            }
+            preparedStatementUpdate.setLong(1, tank.getTankType().getTankId());
+            preparedStatementUpdate.setInt(2, tank.getAmount());
+            preparedStatementUpdate.setLong(3, militaryUnitId);
+            preparedStatementUpdate.setLong(4, tankId);
+            preparedStatementUpdate.executeUpdate();
         } catch (SQLException exception) {
             throw new ProcessingException(exception.getMessage());
         } finally {
@@ -106,7 +104,7 @@ public class TankRepositoryImpl implements ITankRepository {
                 if (militaryUnit.getId() == militaryUnitTankMilitaryUnitId) {
                     tanks = militaryUnit.getTanks();
                     Tank tank = createIfNotExist(militaryUnitTankId, tanks);
-                    Tank.TankType tankType = tankTypeByString(resultSet.getString("tank_type"));
+                    Tank.TankType tankType = Tank.TankType.valueOf(resultSet.getString("tank_type"));
                     tank.setTankType(tankType);
                     tank.setAmount(resultSet.getInt("amount"));
                 }
@@ -136,52 +134,6 @@ public class TankRepositoryImpl implements ITankRepository {
             result = newTank;
         }
         return result;
-    }
-
-    private static Tank.TankType tankTypeByString(String typeInString) {
-        Tank.TankType tankType = null;
-        switch (typeInString) {
-            case "2С25 Sproot-CD":
-                tankType = Tank.TankType.T_2C25;
-                break;
-            case "2С31 Vena":
-                tankType = Tank.TankType.T_2C31;
-                break;
-            case "BMD-4":
-                tankType = Tank.TankType.BMD_4;
-                break;
-            case "BMD-4M":
-                tankType = Tank.TankType.BMD_4M;
-                break;
-            case "BTR-90":
-                tankType = Tank.TankType.BTR_90;
-                break;
-            case "BTR-MD":
-                tankType = Tank.TankType.BTR_MD;
-                break;
-            case "T-14 Armata":
-                tankType = Tank.TankType.T_14;
-                break;
-            case "T-15":
-                tankType = Tank.TankType.T_15;
-                break;
-            case "T-90":
-                tankType = Tank.TankType.T_90;
-                break;
-            case "T-95 Object":
-                tankType = Tank.TankType.T_95;
-                break;
-            case "TOC-1 Pinocchio":
-                tankType = Tank.TankType.TOC_1;
-                break;
-            case "TOC-1A Sunfire":
-                tankType = Tank.TankType.TOC_1A;
-                break;
-            case "Black Eagle":
-                tankType = Tank.TankType.BLACK_EAGLE;
-                break;
-        }
-        return tankType;
     }
 
     private static String SELECT_COMMAND() {

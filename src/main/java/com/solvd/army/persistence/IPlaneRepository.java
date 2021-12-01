@@ -1,14 +1,15 @@
 package com.solvd.army.persistence;
 
 import com.solvd.army.domain.resources.Plane;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 public interface IPlaneRepository {
 
-    void create(Plane plane, Long militaryUnitId);
+    void create(@Param("plane") Plane plane, @Param("militaryUnitId") Long militaryUnitId);
 
-    void update(List<Plane> plane, List<Long> ammoIds, Long militaryUnitId);
+    void update(@Param("plane") Plane plane, @Param("planeId") Long ammoId, @Param("militaryUnitId") Long militaryUnitId);
 
     List<Plane> getByMilitaryUnitName(String militaryUnitName);
 

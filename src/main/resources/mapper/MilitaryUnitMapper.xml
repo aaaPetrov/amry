@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.army.persistence.IMilitaryUnitRepository">
+
+    <insert id="create" keyColumn="id" keyProperty="militaryUnit.id" useGeneratedKeys="true">
+        insert into military_units(army_id, name, longitude, latitude)
+        value(#{armyId}, #{militaryUnit.name}, #{militaryUnit.location.longitude}, #{militaryUnit.location.latitude});
+    </insert>
+
+    <update id="update" useGeneratedKeys="false">
+        update military_units
+        set name = #{militaryUnit.name}, longitude = #{militaryUnit.location.longitude}, latitude = #{militaryUnit.location.latitude}
+        where army_id = #{armyId} and id = #{militaryUnit.id};
+    </update>
+
+    <select id="get" resultMap="GetMilitaryUnitsResultMap">
+        select
+        MU.id as military_unit_id,
+        MU.army_id as military_unit_army_id,
+        MU.name as military_unit_name,
+        MU.longitude as military_unit_longitude,
+        MU.latitude as military_unit_latitude
+        from military_units as MU
+        where MU.army_id = (select A.id as army_id from armies as A where A.country = #{country});
+    </select>
+
+    <resultMap id="GetMilitaryUnitsResultMap" type="com.solvd.army.domain.MilitaryUnit" autoMapping="false">
+        <id property="id" column="military_unit_id"/>
+        <result property="name" column="military_unit_name"/>
+        <result property="location.longitude" column="military_unit_longitude"/>
+        <result property="location.latitude" column="military_unit_latitude"/>
+    </resultMap>
+
+    <resultMap id="GetAllMilitaryUnitMap" type="com.solvd.army.domain.MilitaryUnit" autoMapping="false">
+        <id property="id" column="military_unit_id"/>
+        <result property="name" column="military_unit_name"/>
+        <result property="location.longitude" column="military_unit_longitude"/>
+        <result property="location.latitude" column="military_unit_latitude"/>
+        <collection property="ammunition"
+                    resultMap="com.solvd.army.persistence.IAmmoRepository.GetAllAmmunitionResultMap"/>
+        <collection property="weapons" resultMap="com.solvd.army.persistence.IWeaponRepository.GetAllWeaponsResultMap"/>
+        <collection property="tanks" resultMap="com.solvd.army.persistence.ITankRepository.GetAllTanksResultMap"/>
+        <collection property="planes" resultMap="com.solvd.army.persistence.IPlaneRepository.GetAllPlanesResultMap"/>
+        <collection property="soldiers"
+                    resultMap="com.solvd.army.persistence.ISoldierRepository.GetAllSoldiersResultMap"/>
+    </resultMap>
+
+    <sql id="SelectColumns">
+        M.army_id as military_unit_army_id,
+        M.id as military_unit_id,
+        M.name as military_unit_name,
+        M.latitude as military_unit_latitude, M.longitude as military_unit_longitude,
+    </sql>
+
+</mapper>

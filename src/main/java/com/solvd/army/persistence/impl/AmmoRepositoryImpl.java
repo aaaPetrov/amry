@@ -24,7 +24,7 @@ public class AmmoRepositoryImpl implements IAmmoRepository {
 
             while (resultSet.next()) {
                 Ammo newAmmo = new Ammo();
-                Ammo.AmmoType ammoType = ammoTypeByString(resultSet.getString("type"));
+                Ammo.AmmoType ammoType = Ammo.AmmoType.valueOf(resultSet.getString("type"));
                 newAmmo.setAmmoType(ammoType);
                 newAmmo.setAmount(resultSet.getInt("amount"));
                 ammunition.add(newAmmo);
@@ -45,7 +45,7 @@ public class AmmoRepositoryImpl implements IAmmoRepository {
         try (PreparedStatement preparedStatementSelect = connection.prepareStatement(sqlCommandSelect)) {
             preparedStatementSelect.setLong(1, militaryUnitId);
             ResultSet resultSet = preparedStatementSelect.executeQuery();
-            if(resultSet != null) {
+            if (resultSet != null) {
                 ids = new ArrayList<>();
             }
             while (resultSet.next()) {
@@ -60,17 +60,15 @@ public class AmmoRepositoryImpl implements IAmmoRepository {
     }
 
     @Override
-    public void update(List<Ammo> ammo, List<Long> ammoIds, Long militaryUnitId) {
+    public void update(Ammo ammo, Long ammoId, Long militaryUnitId) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommandUpdate = "update military_unit_ammo set ammo_id = ?, amount = ? where military_unit_id = ? and ammo_id = ?;";
         try (PreparedStatement preparedStatementUpdate = connection.prepareStatement(sqlCommandUpdate)) {
-            for(int i = 0; i < ammoIds.size(); i++) {
-                preparedStatementUpdate.setLong(1, ammo.get(i).getAmmoType().getAmmoId());
-                preparedStatementUpdate.setInt(2, ammo.get(i).getAmount());
-                preparedStatementUpdate.setLong(3, militaryUnitId);
-                preparedStatementUpdate.setLong(4, ammoIds.get(i));
-                preparedStatementUpdate.executeUpdate();
-            }
+            preparedStatementUpdate.setLong(1, ammo.getAmmoType().getAmmoId());
+            preparedStatementUpdate.setInt(2, ammo.getAmount());
+            preparedStatementUpdate.setLong(3, militaryUnitId);
+            preparedStatementUpdate.setLong(4, ammoId);
+            preparedStatementUpdate.executeUpdate();
         } catch (SQLException exception) {
             throw new ProcessingException(exception.getMessage());
         } finally {
@@ -103,7 +101,7 @@ public class AmmoRepositoryImpl implements IAmmoRepository {
                 if (militaryUnit.getId() == militaryUnitAmmoMilitaryUnitId) {
                     ammunnition = militaryUnit.getAmmunition();
                     Ammo ammo = createIfNotExist(militaryUnitAmmoId, ammunnition);
-                    Ammo.AmmoType ammoType = ammoTypeByString(resultSet.getString("ammo_type"));
+                    Ammo.AmmoType ammoType = Ammo.AmmoType.valueOf(resultSet.getString("ammo_type"));
                     ammo.setAmmoType(ammoType);
                     ammo.setAmount(resultSet.getInt("amount"));
                 }
@@ -133,34 +131,6 @@ public class AmmoRepositoryImpl implements IAmmoRepository {
             result = newAmmo;
         }
         return result;
-    }
-
-    private static Ammo.AmmoType ammoTypeByString(String typeInString) {
-        Ammo.AmmoType ammoType = null;
-        switch (typeInString) {
-            case "5.45х39mm":
-                ammoType = Ammo.AmmoType.B_5_45x39;
-                break;
-            case "5.56х45mm":
-                ammoType = Ammo.AmmoType.B_5_56x45;
-                break;
-            case "6х51mm":
-                ammoType = Ammo.AmmoType.B_6x51;
-                break;
-            case "7.62х39mm":
-                ammoType = Ammo.AmmoType.B_7_62x39;
-                break;
-            case "7.62х54mm R":
-                ammoType = Ammo.AmmoType.B_7_62x54_R;
-                break;
-            case "7.92х57mm":
-                ammoType = Ammo.AmmoType.B_7_92x57mm;
-                break;
-            case "8.6x70mm":
-                ammoType = Ammo.AmmoType.B_8_6x70;
-                break;
-        }
-        return ammoType;
     }
 
     private static String SELECT_COMMAND() {

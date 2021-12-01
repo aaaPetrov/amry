@@ -2,22 +2,24 @@ package com.solvd.army.service.impl;
 
 import com.solvd.army.domain.exception.NoDataException;
 import com.solvd.army.domain.resources.Ammo;
-import com.solvd.army.persistence.impl.AmmoRepositoryImpl;
+import com.solvd.army.persistence.IAmmoRepository;
+import com.solvd.army.persistence.impl.AmmoMapperImpl;
 import com.solvd.army.service.IAmmoService;
 
 import java.util.List;
 
 public class AmmoServiceImpl implements IAmmoService {
 
-    private final AmmoRepositoryImpl ammoRepository;
+    private final IAmmoRepository ammoRepository;
 
     public AmmoServiceImpl() {
-        ammoRepository = new AmmoRepositoryImpl();
+        /*ammoRepository = new AmmoRepositoryImpl();*/
+        ammoRepository = new AmmoMapperImpl();
     }
 
     @Override
-    public List<Ammo> update(List<Ammo> ammo, List<Long> ammoIds, Long militaryUnitId) {
-        ammoRepository.update(ammo, ammoIds, militaryUnitId);
+    public Ammo update(Ammo ammo, Long ammoId, Long militaryUnitId) {
+        ammoRepository.update(ammo, ammoId, militaryUnitId);
         return ammo;
     }
 
@@ -30,7 +32,7 @@ public class AmmoServiceImpl implements IAmmoService {
     @Override
     public List<Long> getId(Long militaryUnitId) {
         List<Long> ammoIds = ammoRepository.getId(militaryUnitId);
-        if(ammoIds == null) {
+        if (ammoIds == null) {
             throw new NoDataException("ammoRepository.getId() was returned null-value in AmmoServiceImpl.");
         }
         return ammoIds;
@@ -39,7 +41,7 @@ public class AmmoServiceImpl implements IAmmoService {
     @Override
     public List<Ammo> getByMilitaryUnitName(String militaryUnitName) {
         List<Ammo> ammunition = ammoRepository.getByMilitaryUnitName(militaryUnitName);
-        if(ammunition == null) {
+        if (ammunition == null) {
             throw new NoDataException("ammoRepository.getByMilitaryUnitName() was returned null-value in AmmoServiceImpl.");
         }
         return ammunition;
