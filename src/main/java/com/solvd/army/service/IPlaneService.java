@@ -8,7 +8,7 @@ public interface IPlaneService {
 
     Plane create(Plane plane, Long militaryUnitId);
 
-    List<Plane> update(List<Plane> plane, List<Long> planeIds, Long militaryUnitId);
+    Plane update(Plane plane, Long planeId, Long militaryUnitId);
 
     List<Plane> getByMilitaryUnitName(String militaryUnitName);
 

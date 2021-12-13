@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.army.persistence.ITankRepository">
+
+    <insert id="create" useGeneratedKeys="false">
+        insert into military_unit_tank(tank_id, military_unit_id, amount)
+        value(#{tank.tankType.tankId}, #{militaryUnitId}, #{tank.amount});
+    </insert>
+
+    <update id="update" useGeneratedKeys="false">
+        update military_unit_tank set tank_id= ${tank.tankType.tankId}, amount = ${tank.amount}
+        where
+        military_unit_id = ${militaryUnitId} and tank_id = ${tankId};
+    </update>
+
+    <select id="getId" resultType="java.lang.Long">
+        select tank_id from military_unit_tank where military_unit_id = #{militaryUnitId};
+    </select>
+
+    <select id="getByMilitaryUnitName" resultMap="GetTanksResultMap">
+        select
+        MUT.tank_id as military_unit_tank_tank_id,
+        MUT.military_unit_id as military_unit_tank_military_unit_id,
+        MUT.amount as military_unit_tank_amount,
+        T.id as tank_id,
+        T.type as tank_type
+        from military_unit_tank as MUT
+        inner join tanks as T on MUT.tank_id = T.id
+        where MUT.military_unit_id =
+        (select id from military_units where name = #{militaryUnitName});
+    </select>
+
+    <resultMap id="GetTanksResultMap" type="com.solvd.army.domain.resources.Tank" autoMapping="false">
+        <result property="tankType" column="tank_type"/>
+        <result property="amount" column="military_unit_tank_amount"/>
+    </resultMap>
+
+    <resultMap id="GetAllTanksResultMap" type="com.solvd.army.domain.resources.Tank" autoMapping="false">
+        <result property="tankType" column="tank_type"/>
+        <result property="amount" column="military_unit_tank_amount"/>
+    </resultMap>
+
+    <sql id="SelectColumns">
+        T.id as tank_id,
+        T.type as tank_type,
+        MAT.tank_id as military_unit_tank_tank_id,
+        MAT.military_unit_id as military_unit_tank_military_unit_id,
+        MAT.amount as military_unit_tank_amount,
+    </sql>
+
+</mapper>

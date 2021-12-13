@@ -4,7 +4,8 @@ import com.solvd.army.domain.Army;
 import com.solvd.army.domain.MilitaryUnit;
 import com.solvd.army.domain.exception.NoDataException;
 import com.solvd.army.domain.soldier.Soldier;
-import com.solvd.army.persistence.impl.ArmyRepositoryImpl;
+import com.solvd.army.persistence.IArmyRepository;
+import com.solvd.army.persistence.impl.ArmyMapperImpl;
 import com.solvd.army.service.IArmyService;
 
 import java.util.List;
@@ -12,12 +13,13 @@ import java.util.List;
 
 public class ArmyServiceImpl implements IArmyService {
 
-    private final ArmyRepositoryImpl armyRepository;
+    private final IArmyRepository armyRepository;
     private final MilitaryUnitServiceImpl militaryUnitService;
     private final SoldierServiceImpl soldierService;
 
     public ArmyServiceImpl() {
-        armyRepository = new ArmyRepositoryImpl();
+        /*armyRepository = new ArmyRepositoryImpl(); //OR MAPPER*/
+        armyRepository = new ArmyMapperImpl();
         militaryUnitService = new MilitaryUnitServiceImpl();
         soldierService = new SoldierServiceImpl();
     }
@@ -61,11 +63,11 @@ public class ArmyServiceImpl implements IArmyService {
     @Override
     public Army get(String country) {
         Army army = armyRepository.get(country);
-        if(army == null) {
+        if (army == null) {
             throw new NoDataException("armyRepository.get() was returned null-value in ArmyServiceImpl.");
         }
         List<MilitaryUnit> militaryUnits = militaryUnitService.get(army.getCountry());
-        if(militaryUnits == null) {
+        if (militaryUnits == null) {
             throw new NoDataException("militaryUnitService.get() was returned null-value in ArmyServiceImpl.");
         }
         army.setMilitaryUnits(militaryUnits);
@@ -75,7 +77,7 @@ public class ArmyServiceImpl implements IArmyService {
     @Override
     public List<Army> getAll() {
         List<Army> armies = armyRepository.getAll();
-        if(armies == null) {
+        if (armies == null) {
             throw new NoDataException("armyRepository.getAll() was returned null-value in ArmyServiceImpl.");
         }
         return armies;

@@ -2,7 +2,6 @@ package com.solvd.army.persistence.impl;
 
 import com.solvd.army.domain.MilitaryUnit;
 import com.solvd.army.domain.exception.ProcessingException;
-import com.solvd.army.domain.resources.Ammo;
 import com.solvd.army.domain.soldier.ServiceTerm;
 import com.solvd.army.domain.soldier.Soldier;
 import com.solvd.army.persistence.ConnectionPool;
@@ -28,7 +27,7 @@ public class SoldierRepositoryImpl implements ISoldierRepository {
 
             while (resultSet.next()) {
                 Soldier newSoldier = new Soldier();
-                Soldier.Rank rankType = rankTypeByString(resultSet.getString("type"));
+                Soldier.Rank rankType = Soldier.Rank.valueOf(resultSet.getString("type"));
                 newSoldier.setId(resultSet.getLong("soldier_id"));
                 newSoldier.setRank(rankType);
                 newSoldier.setFirstName(resultSet.getString("first_name"));
@@ -73,7 +72,6 @@ public class SoldierRepositoryImpl implements ISoldierRepository {
     public void updateSoldier(Soldier soldier, Long militaryUnitId) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommandSoldier = "update soldiers set rank_id = ?, entered_the_service = ?, end_of_service = ? where military_unit_id = ? and id = ?;";
-
         try (PreparedStatement preparedStatementSoldier = connection.prepareStatement(sqlCommandSoldier)) {
             preparedStatementSoldier.setLong(1, soldier.getRank().getRankId());
             preparedStatementSoldier.setDate(2, Date.valueOf(soldier.getTerm().getEntered()));
@@ -89,10 +87,9 @@ public class SoldierRepositoryImpl implements ISoldierRepository {
     }
 
     @Override
-    public Long createRecruit(Soldier soldier, Long militaryUnitId) {
+    public void createRecruit(Soldier soldier, Long militaryUnitId) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommandRecruit = "insert into recruits(first_name, last_name, birthday) value(?, ?, ?);";
-        Long recruitId = null;
         try (PreparedStatement preparedStatementRecruit = connection.prepareStatement(sqlCommandRecruit, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatementRecruit.setString(1, soldier.getFirstName());
             preparedStatementRecruit.setString(2, soldier.getLastName());
@@ -101,34 +98,32 @@ public class SoldierRepositoryImpl implements ISoldierRepository {
 
             ResultSet resultSetRecruit = preparedStatementRecruit.getGeneratedKeys();
             if (resultSetRecruit.next()) {
-                recruitId = resultSetRecruit.getLong(1);
+                soldier.setId(resultSetRecruit.getLong(1));
             }
         } catch (SQLException exception) {
             throw new ProcessingException(exception.getMessage());
         } finally {
             ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
         }
-        return recruitId;
     }
 
     @Override
-    public void createSoldier(Soldier soldier, Long militaryUnitId, Long recruitId) {
+    public void createSoldier(Soldier soldier, Long militaryUnitId) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommandSoldier = "insert into soldiers(recruit_id, rank_id, military_unit_id, entered_the_service, end_of_service) value(?, ?, ?, ?, ?);";
         try (PreparedStatement preparedStatementSoldier = connection.prepareStatement(sqlCommandSoldier, Statement.RETURN_GENERATED_KEYS)) {
-            if (recruitId != null) {
-                preparedStatementSoldier.setLong(1, recruitId);
-                preparedStatementSoldier.setLong(2, soldier.getRank().getRankId());
-                preparedStatementSoldier.setLong(3, militaryUnitId);
-                preparedStatementSoldier.setDate(4, Date.valueOf(soldier.getTerm().getEntered()));
-                preparedStatementSoldier.setDate(5, Date.valueOf(soldier.getTerm().getEnd()));
+            preparedStatementSoldier.setLong(1, soldier.getId());
+            preparedStatementSoldier.setLong(2, soldier.getRank().getRankId());
+            preparedStatementSoldier.setLong(3, militaryUnitId);
+            preparedStatementSoldier.setDate(4, Date.valueOf(soldier.getTerm().getEntered()));
+            preparedStatementSoldier.setDate(5, Date.valueOf(soldier.getTerm().getEnd()));
 
-                preparedStatementSoldier.executeUpdate();
-                ResultSet resultSetSoldier = preparedStatementSoldier.getGeneratedKeys();
-                if (resultSetSoldier.next()) {
-                    soldier.setId(resultSetSoldier.getLong(1));
-                }
+            preparedStatementSoldier.executeUpdate();
+            ResultSet resultSetSoldier = preparedStatementSoldier.getGeneratedKeys();
+            if (resultSetSoldier.next()) {
+                soldier.setId(resultSetSoldier.getLong(1));
             }
+
         } catch (SQLException exception) {
             throw new ProcessingException(exception.getMessage());
         } finally {
@@ -160,7 +155,7 @@ public class SoldierRepositoryImpl implements ISoldierRepository {
                 if (militaryUnit.getId() == soldierMilitaryUnitId) {
                     soldiers = militaryUnit.getSoldiers();
                     Soldier soldier = createIfNotExist(soldierId, soldiers);
-                    Soldier.Rank rankType = rankTypeByString(resultSet.getString("rank_type"));
+                    Soldier.Rank rankType = Soldier.Rank.valueOf(resultSet.getString("rank_type"));
 
                     soldier.setFirstName(resultSet.getString("first_name"));
                     soldier.setLastName(resultSet.getString("last_name"));
@@ -202,67 +197,6 @@ public class SoldierRepositoryImpl implements ISoldierRepository {
             result = newSoldier;
         }
         return result;
-    }
-
-    private static Soldier.Rank rankTypeByString(String typeInString) {
-        Soldier.Rank rankType = null;
-        switch (typeInString) {
-            case "Squaddie":
-                rankType = Soldier.Rank.SQUADDIE;
-                break;
-            case "Corporal":
-                rankType = Soldier.Rank.CORPORAL;
-                break;
-            case "Lance-sergeant":
-                rankType = Soldier.Rank.LANCE_SERGEANT;
-                break;
-            case "Sergeant":
-                rankType = Soldier.Rank.SERGEANT;
-                break;
-            case "Staff-sergeant":
-                rankType = Soldier.Rank.STAFF_SERGEANT;
-                break;
-            case "Senior-sergeant":
-                rankType = Soldier.Rank.SENIOR_SERGEANT;
-                break;
-            case "Warrant":
-                rankType = Soldier.Rank.WARRANT;
-                break;
-            case "Senior-warrant":
-                rankType = Soldier.Rank.SENIOR_WARRANT;
-                break;
-            case "Sublieutenant":
-                rankType = Soldier.Rank.SUBLIEUTENANT;
-                break;
-            case "Lieutenant":
-                rankType = Soldier.Rank.LIEUTENANT;
-                break;
-            case "Senior-lieutenant":
-                rankType = Soldier.Rank.SENIOR_LIEUTENANT;
-                break;
-            case "Captain":
-                rankType = Soldier.Rank.CAPTAIN;
-                break;
-            case "Major":
-                rankType = Soldier.Rank.MAJOR;
-                break;
-            case "Lieutenant-colonel":
-                rankType = Soldier.Rank.LIEUTENANT_COLONEL;
-                break;
-            case "Colonel":
-                rankType = Soldier.Rank.COLONEL;
-                break;
-            case "Major-general":
-                rankType = Soldier.Rank.MAJOR_GENERAL;
-                break;
-            case "Lieutenant-general":
-                rankType = Soldier.Rank.LIEUTENANT_GENERAL;
-                break;
-            case "Colonel-general":
-                rankType = Soldier.Rank.COLONEL_GENERAL;
-                break;
-        }
-        return rankType;
     }
 
     private static String SELECT_COMMAND() {

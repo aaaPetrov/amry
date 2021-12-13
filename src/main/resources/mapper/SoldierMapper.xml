@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.army.persistence.ISoldierRepository">
+
+    <insert id="createRecruit" keyColumn="id" keyProperty="soldier.id" useGeneratedKeys="true">
+        insert into recruits(first_name, last_name, birthday)
+        value(#{soldier.firstName}, #{soldier.lastName}, #{soldier.birthday});
+    </insert>
+
+    <insert id="createSoldier" keyColumn="id" keyProperty="soldier.id" useGeneratedKeys="true">
+        insert into soldiers(recruit_id, rank_id, military_unit_id, entered_the_service, end_of_service)
+        value(#{soldier.id}, #{soldier.rank.rankId}, #{militaryUnitId}, #{soldier.term.enteredAt}, #{soldier.term.endOn});
+    </insert>
+
+    <update id="updateRecruit" useGeneratedKeys="false">
+        update recruits
+        set first_name = #{soldier.firstName}, last_name = #{soldier.lastName}, birthday = #{soldier.birthday}
+        where id = (select recruit_id from soldiers where id = #{soldier.id});
+    </update>
+
+    <update id="updateSoldier" useGeneratedKeys="false">
+        update soldiers
+        set rank_id = #{soldier.rank.rankId}, entered_the_service = #{soldier.term.enteredAt}, end_of_service = #{soldier.term.endOn}
+        where military_unit_id = #{militaryUnitId} and id = #{soldier.id};
+    </update>
+
+    <delete id="delete">
+        delete from recruits where first_name = #{firstName} and last_name = #{lastName};
+    </delete>
+
+    <select id="getByMilitaryUnitName" resultMap="GetSoldiersResultMap">
+        select
+        S.id as soldier_id,
+        S.recruit_id as soldier_recruit_id,
+        S.rank_id as soldier_rank_id,
+        S.military_unit_id as soldier_military_unit_id,
+        R.type as rank_type,
+        REC.first_name as recruit_first_name,
+        REC.last_name as recruit_last_name,
+        REC.birthday as recruit_birthday,
+        S.entered_the_service as soldier_entered_the_service,
+        S.end_of_service as soldier_end_of_service
+        from soldiers as S
+        inner join recruits as REC on S.recruit_id = REC.id
+        inner join ranks as R on S.rank_id = R.id
+        where S.military_unit_id = (select id from military_units where name = #{militaryUnitName});
+    </select>
+
+    <resultMap id="GetSoldiersResultMap" type="com.solvd.army.domain.soldier.Soldier" autoMapping="false">
+        <id property="id" column="soldier_id"/>
+        <result property="firstName" column="recruit_first_name"/>
+        <result property="lastName" column="recruit_last_name"/>
+        <result property="birthday" column="recruit_birthday"/>
+        <result property="rank" column="rank_type"/>
+        <result property="term.enteredAt" column="soldier_entered_the_service"/>
+        <result property="term.endOn" column="soldier_end_of_service"/>
+    </resultMap>
+
+    <resultMap id="GetAllSoldiersResultMap" type="com.solvd.army.domain.soldier.Soldier" autoMapping="false">
+        <id property="id" column="soldier_id"/>
+        <result property="firstName" column="recruit_first_name"/>
+        <result property="lastName" column="recruit_last_name"/>
+        <result property="birthday" column="recruit_birthday"/>
+        <result property="rank" column="rank_type"/>
+        <result property="term.enteredAt" column="soldier_entered_the_service"/>
+        <result property="term.endOn" column="soldier_end_of_service"/>
+    </resultMap>
+
+    <sql id="SelectColumns">
+        REC.id as recruit_id,
+        S.id as soldier_id,
+        S.recruit_id as soldier_recruit_id,
+        S.military_unit_id as soldier_military_unit_id,
+        REC.first_name as recruit_first_name,
+        REC.last_name as recruit_last_name,
+        REC.birthday as recruit_birthday,
+        R.id as rank_id,
+        R.type as rank_type,
+        S.entered_the_service as soldier_entered_the_service,
+        S.end_of_service as soldier_end_of_service
+    </sql>
+
+</mapper>

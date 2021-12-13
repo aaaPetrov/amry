@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.army.persistence.IPlaneRepository">
+
+    <insert id="create" useGeneratedKeys="false">
+        insert into military_unit_plane(plane_id, military_unit_id, amount)
+        value(#{plane.planeType.planeId}, #{militaryUnitId}, #{plane.amount});
+    </insert>
+
+    <update id="update" useGeneratedKeys="false">
+        update military_unit_plane set plane_id= ${plane.planeType.planeId}, amount = ${plane.amount}
+        where
+        military_unit_id = ${militaryUnitId} and plane_id = ${planeId};
+    </update>
+
+    <select id="getId" resultType="java.lang.Long">
+        select plane_id from military_unit_plane where military_unit_id = #{militaryUnitId};
+    </select>
+
+    <select id="getByMilitaryUnitName" resultMap="GetPlanesResultMap">
+        select
+        MUP.plane_id as military_unit_plane_plane_id,
+        MUP.military_unit_id as military_unit_plane_military_unit_id,
+        MUP.amount as military_unit_plane_amount,
+        P.id as plane_id,
+        P.type as plane_type
+        from military_unit_plane as MUP
+        inner join planes as P on MUP.plane_id = P.id
+        where MUP.military_unit_id =
+        (select id from military_units where name = #{militaryUnitName});
+    </select>
+
+    <resultMap id="GetPlanesResultMap" type="com.solvd.army.domain.resources.Plane" autoMapping="false">
+        <result property="planeType" column="plane_type"/>
+        <result property="amount" column="military_unit_plane_amount"/>
+    </resultMap>
+
+    <resultMap id="GetAllPlanesResultMap" type="com.solvd.army.domain.resources.Plane" autoMapping="false">
+        <result property="planeType" column="plane_type"/>
+        <result property="amount" column="military_unit_plane_amount"/>
+    </resultMap>
+
+    <sql id="SelectColumns">
+        P.id as plane_id,
+        P.type as plane_type,
+        MAP.plane_id as military_unit_plane_plane_id,
+        MAP.military_unit_id as military_unit_plane_military_unit_id,
+        MAP.amount as military_unit_plane_amount,
+    </sql>
+
+</mapper>

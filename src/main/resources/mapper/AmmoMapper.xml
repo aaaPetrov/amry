@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.army.persistence.IAmmoRepository">
+
+    <insert id="create" useGeneratedKeys="false">
+        insert into military_unit_ammo(ammo_id, military_unit_id, amount)
+        value(#{ammo.ammoType.ammoId}, #{militaryUnitId}, #{ammo.amount});
+    </insert>
+
+    <update id="update" useGeneratedKeys="false">
+        update military_unit_ammo set ammo_id= ${ammo.ammoType.ammoId}, amount = ${ammo.amount}
+        where
+        military_unit_id = ${militaryUnitId} and ammo_id = ${ammoId};
+    </update>
+
+    <select id="getId" resultType="java.lang.Long">
+        select ammo_id from military_unit_ammo where military_unit_id = #{militaryUnitId};
+    </select>
+
+    <select id="getByMilitaryUnitName" resultMap="GetAmmunitionResultMap">
+        select
+        MUAM.ammo_id as military_unit_ammo_ammo_id,
+        MUAM.military_unit_id as military_unit_ammo_military_unit_id,
+        MUAM.amount as military_unit_ammo_amount,
+        AM.id as ammo_id,
+        AM.type as ammo_type
+        from military_unit_ammo as MUAM
+        inner join ammo as AM on MUAM.ammo_id = AM.id
+        where MUAM.military_unit_id =
+        (select id from military_units where name = #{militaryUnitName});
+    </select>
+
+    <resultMap id="GetAmmunitionResultMap" type="com.solvd.army.domain.resources.Ammo" autoMapping="false">
+        <result property="ammoType" column="ammo_type"/>
+        <result property="amount" column="military_unit_ammo_amount"/>
+    </resultMap>
+
+    <resultMap id="GetAllAmmunitionResultMap" type="com.solvd.army.domain.resources.Ammo" autoMapping="false">
+        <result property="ammoType" column="ammo_type"/>
+        <result property="amount" column="military_unit_ammo_amount"/>
+    </resultMap>
+
+    <sql id="SelectColumns">
+        AM.id as ammo_id,
+        AM.type as ammo_type,
+        MAM.ammo_id as military_unit_ammo_ammo_id,
+        MAM.military_unit_id as military_unit_ammo_military_unit_id,
+        MAM.amount as military_unit_ammo_amount,
+    </sql>
+
+</mapper>

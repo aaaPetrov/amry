@@ -8,7 +8,7 @@ public interface ITankService {
 
     Tank create(Tank tank, Long militaryUnitId);
 
-    List<Tank> update(List<Tank> tank, List<Long> tankIds, Long militaryUnitId);
+    Tank update(Tank tank, Long tankId, Long militaryUnitId);
 
     List<Tank> getByMilitaryUnitName(String militaryUnitName);
 

@@ -27,7 +27,7 @@ public class WeaponRepositoryImpl implements IWeaponRepository {
 
             while (resultSet.next()) {
                 Weapon newWeapon = new Weapon();
-                Weapon.WeaponType weaponType = weaponTypeByString(resultSet.getString("type"));
+                Weapon.WeaponType weaponType = Weapon.WeaponType.valueOf(resultSet.getString("type"));
                 newWeapon.setWeaponType(weaponType);
                 newWeapon.setAmount(resultSet.getInt("amount"));
                 weapons.add(newWeapon);
@@ -48,7 +48,7 @@ public class WeaponRepositoryImpl implements IWeaponRepository {
         try (PreparedStatement preparedStatementSelect = connection.prepareStatement(sqlCommandSelect)) {
             preparedStatementSelect.setLong(1, militaryUnitId);
             ResultSet resultSet = preparedStatementSelect.executeQuery();
-            if(resultSet != null) {
+            if (resultSet != null) {
                 ids = new ArrayList<>();
             }
             while (resultSet.next()) {
@@ -63,17 +63,15 @@ public class WeaponRepositoryImpl implements IWeaponRepository {
     }
 
     @Override
-    public void update(List<Weapon> weapon, List<Long> weaponIds, Long militaryUnitId) {
+    public void update(Weapon weapon, Long weaponId, Long militaryUnitId) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommandUpdate = "update military_unit_weapon set weapon_id = ?, amount = ? where military_unit_id = ? and weapon_id = ?;";
         try (PreparedStatement preparedStatementUpdate = connection.prepareStatement(sqlCommandUpdate)) {
-            for(int i = 0; i < weaponIds.size(); i++) {
-                preparedStatementUpdate.setLong(1, weapon.get(i).getWeaponType().getWeaponId());
-                preparedStatementUpdate.setInt(2, weapon.get(i).getAmount());
-                preparedStatementUpdate.setLong(3, militaryUnitId);
-                preparedStatementUpdate.setLong(4, weaponIds.get(i));
-                preparedStatementUpdate.executeUpdate();
-            }
+            preparedStatementUpdate.setLong(1, weapon.getWeaponType().getWeaponId());
+            preparedStatementUpdate.setInt(2, weapon.getAmount());
+            preparedStatementUpdate.setLong(3, militaryUnitId);
+            preparedStatementUpdate.setLong(4, weaponId);
+            preparedStatementUpdate.executeUpdate();
         } catch (SQLException exception) {
             throw new ProcessingException(exception.getMessage());
         } finally {
@@ -106,7 +104,7 @@ public class WeaponRepositoryImpl implements IWeaponRepository {
                 if (militaryUnit.getId() == militaryUnitWeaponMilitaryUnitId) {
                     weapons = militaryUnit.getWeapons();
                     Weapon weapon = createIfNotExist(militaryUnitWeaponId, weapons);
-                    Weapon.WeaponType weaponType = weaponTypeByString(resultSet.getString("weapon_type"));
+                    Weapon.WeaponType weaponType = Weapon.WeaponType.valueOf(resultSet.getString("weapon_type"));
                     weapon.setWeaponType(weaponType);
                     weapon.setAmount(resultSet.getInt("amount"));
                 }
@@ -136,94 +134,6 @@ public class WeaponRepositoryImpl implements IWeaponRepository {
             result = newWeapon;
         }
         return result;
-    }
-
-    private static Weapon.WeaponType weaponTypeByString(String typeInString) {
-        Weapon.WeaponType weaponType = null;
-        switch (typeInString) {
-            case "P.APS":
-                weaponType = Weapon.WeaponType.P_APS;
-                break;
-            case "P.SPS":
-                weaponType = Weapon.WeaponType.P_SPS;
-                break;
-            case "P.MR-444":
-                weaponType = Weapon.WeaponType.P_MR_444;
-                break;
-            case "P.MP-448":
-                weaponType = Weapon.WeaponType.P_MP_448;
-                break;
-            case "P.P-96":
-                weaponType = Weapon.WeaponType.P_P_96;
-                break;
-            case "A.AKM":
-                weaponType = Weapon.WeaponType.A_AKM;
-                break;
-            case "A.AK-47":
-                weaponType = Weapon.WeaponType.A_AK_47;
-                break;
-            case "A.AK-74M":
-                weaponType = Weapon.WeaponType.A_AK_74M;
-                break;
-            case "A.9A91":
-                weaponType = Weapon.WeaponType.A_9A91;
-                break;
-            case "A.A-91M":
-                weaponType = Weapon.WeaponType.A_A_91M;
-                break;
-            case "SR.SVD":
-                weaponType = Weapon.WeaponType.SR_SVD;
-                break;
-            case "SR.SVY_AS":
-                weaponType = Weapon.WeaponType.SR_SVY_AS;
-                break;
-            case "SR.SV-98":
-                weaponType = Weapon.WeaponType.SR_SV_98;
-                break;
-            case "SR.OSV-96":
-                weaponType = Weapon.WeaponType.SR_OSV_96;
-                break;
-            case "SR.ASVK":
-                weaponType = Weapon.WeaponType.SR_ASVK;
-                break;
-            case "MG.RPK":
-                weaponType = Weapon.WeaponType.MG_RPK;
-                break;
-            case "MG.PK":
-                weaponType = Weapon.WeaponType.MG_PK;
-                break;
-            case "MG.PKM":
-                weaponType = Weapon.WeaponType.MG_PKM;
-                break;
-            case "MG.PKMT":
-                weaponType = Weapon.WeaponType.MG_PKMT;
-                break;
-            case "MG.PKMB":
-                weaponType = Weapon.WeaponType.MG_PKMB;
-                break;
-            case "MG.KPV":
-                weaponType = Weapon.WeaponType.MG_KPV;
-                break;
-            case "GL.GP-25":
-                weaponType = Weapon.WeaponType.GL_GP_25;
-                break;
-            case "GL.6G30":
-                weaponType = Weapon.WeaponType.GL_6G30;
-                break;
-            case "GL.GM-94":
-                weaponType = Weapon.WeaponType.GL_GM_94;
-                break;
-            case "GL.RMG":
-                weaponType = Weapon.WeaponType.GL_RMG;
-                break;
-            case "GL.RPG26":
-                weaponType = Weapon.WeaponType.GL_RPG_26;
-                break;
-            case "GL.RPG32":
-                weaponType = Weapon.WeaponType.GL_RPG_32;
-                break;
-        }
-        return weaponType;
     }
 
     private static String SELECT_COMMAND() {

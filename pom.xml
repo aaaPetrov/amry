@@ -12,6 +12,7 @@
     <properties>
         <javaVersion>1.8</javaVersion>
         <mySqlConnectorVersion>8.0.27</mySqlConnectorVersion>
+        <myBatisVersion>3.5.7</myBatisVersion>
     </properties>
 
     <dependencies>
@@ -19,6 +20,12 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>${mySqlConnectorVersion}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>${myBatisVersion}</version>
         </dependency>
     </dependencies>
 

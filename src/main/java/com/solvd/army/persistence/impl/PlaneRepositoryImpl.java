@@ -27,7 +27,7 @@ public class PlaneRepositoryImpl implements IPlaneRepository {
 
             while (resultSet.next()) {
                 Plane newPlane = new Plane();
-                Plane.PlaneType planeType = planeTypeByString(resultSet.getString("type"));
+                Plane.PlaneType planeType = Plane.PlaneType.valueOf(resultSet.getString("type"));
                 newPlane.setPlaneType(planeType);
                 newPlane.setAmount(resultSet.getInt("amount"));
                 planes.add(newPlane);
@@ -48,7 +48,7 @@ public class PlaneRepositoryImpl implements IPlaneRepository {
         try (PreparedStatement preparedStatementSelect = connection.prepareStatement(sqlCommandSelect)) {
             preparedStatementSelect.setLong(1, militaryUnitId);
             ResultSet resultSet = preparedStatementSelect.executeQuery();
-            if(resultSet != null) {
+            if (resultSet != null) {
                 ids = new ArrayList<>();
             }
             while (resultSet.next()) {
@@ -63,17 +63,15 @@ public class PlaneRepositoryImpl implements IPlaneRepository {
     }
 
     @Override
-    public void update(List<Plane> plane, List<Long> planeIds, Long militaryUnitId) {
+    public void update(Plane plane, Long planeId, Long militaryUnitId) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommandUpdate = "update military_unit_plane set plane_id = ?, amount = ? where military_unit_id = ? and plane_id = ?;";
         try (PreparedStatement preparedStatementUpdate = connection.prepareStatement(sqlCommandUpdate)) {
-            for(int i = 0; i < planeIds.size(); i++) {
-                preparedStatementUpdate.setLong(1, plane.get(i).getPlaneType().getPlaneId());
-                preparedStatementUpdate.setInt(2, plane.get(i).getAmount());
-                preparedStatementUpdate.setLong(3, militaryUnitId);
-                preparedStatementUpdate.setLong(4, planeIds.get(i));
-                preparedStatementUpdate.executeUpdate();
-            }
+            preparedStatementUpdate.setLong(1, plane.getPlaneType().getPlaneId());
+            preparedStatementUpdate.setInt(2, plane.getAmount());
+            preparedStatementUpdate.setLong(3, militaryUnitId);
+            preparedStatementUpdate.setLong(4, planeId);
+            preparedStatementUpdate.executeUpdate();
         } catch (SQLException exception) {
             throw new ProcessingException(exception.getMessage());
         } finally {
@@ -106,7 +104,7 @@ public class PlaneRepositoryImpl implements IPlaneRepository {
                 if (militaryUnit.getId() == militaryUnitPlaneMilitaryUnitId) {
                     planes = militaryUnit.getPlanes();
                     Plane plane = createIfNotExist(militaryUnitPlaneId, planes);
-                    Plane.PlaneType planeType = planeTypeByString(resultSet.getString("plane_type"));
+                    Plane.PlaneType planeType = Plane.PlaneType.valueOf(resultSet.getString("plane_type"));
                     plane.setPlaneType(planeType);
                     plane.setAmount(resultSet.getInt("amount"));
                 }
@@ -136,40 +134,6 @@ public class PlaneRepositoryImpl implements IPlaneRepository {
             result = newPLane;
         }
         return result;
-    }
-
-    private static Plane.PlaneType planeTypeByString(String typeInString) {
-        Plane.PlaneType planeType = null;
-        switch (typeInString) {
-            case "MiG-35":
-                planeType = Plane.PlaneType.MIG_35;
-                break;
-            case "Cy-57":
-                planeType = Plane.PlaneType.CY_57;
-                break;
-            case "Ty-160":
-                planeType = Plane.PlaneType.TY_160;
-                break;
-            case "Cy-25":
-                planeType = Plane.PlaneType.CY_25;
-                break;
-            case "Cy-35C":
-                planeType = Plane.PlaneType.CY_35C;
-                break;
-            case "Cy-47":
-                planeType = Plane.PlaneType.CY_47;
-                break;
-            case "Ty-22M3":
-                planeType = Plane.PlaneType.TY_22M3;
-                break;
-            case "An-124":
-                planeType = Plane.PlaneType.AN_124;
-                break;
-            case "B-52":
-                planeType = Plane.PlaneType.B_52;
-                break;
-        }
-        return planeType;
     }
 
     private static String SELECT_COMMAND() {
