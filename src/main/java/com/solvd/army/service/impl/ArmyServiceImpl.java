@@ -25,14 +25,13 @@ public class ArmyServiceImpl implements IArmyService {
     }
 
     @Override
-    public Army update(Army army) {
+    public void update(Army army) {
         armyRepository.update(army);
         if (army.getMilitaryUnits() != null) {
             for (MilitaryUnit militaryUnit : army.getMilitaryUnits()) {
                 militaryUnitService.update(militaryUnit, army.getId());
             }
         }
-        return army;
     }
 
     @Override

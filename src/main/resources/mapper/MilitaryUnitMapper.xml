@@ -14,6 +14,10 @@
         where army_id = #{armyId} and id = #{militaryUnit.id};
     </update>
 
+    <select id="getFirstMilitaryUnitId" resultType="java.lang.Long">
+        select id from military_units limit 1;
+    </select>
+
     <select id="getCount" resultType="java.lang.Integer">
         select count(*) from military_units;
     </select>

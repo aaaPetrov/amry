@@ -45,15 +45,13 @@ public class SoldierServiceImpl implements ISoldierService {
     }
 
     @Override
-    public Soldier updateSoldier(Soldier soldier, Long militaryUnitId) {
+    public void updateSoldier(Soldier soldier, Long militaryUnitId) {
         soldierRepository.updateSoldier(soldier, militaryUnitId);
-        return soldier;
     }
 
     @Override
-    public Soldier updateRecruit(Soldier soldier) {
+    public void updateRecruit(Soldier soldier) {
         soldierRepository.updateRecruit(soldier);
-        return soldier;
     }
 
     @Override

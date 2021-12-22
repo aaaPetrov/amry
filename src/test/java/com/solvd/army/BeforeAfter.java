@@ -11,6 +11,8 @@ import com.solvd.army.domain.soldier.ServiceTerm;
 import com.solvd.army.domain.soldier.Soldier;
 import com.solvd.army.service.IArmyService;
 import com.solvd.army.service.impl.ArmyServiceImpl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.testng.annotations.*;
 
 import java.time.LocalDate;
@@ -18,10 +20,15 @@ import java.util.Arrays;
 
 public abstract class BeforeAfter {
 
-    private Army army;
-    private Army army1;
+    private static final Logger LOGGER = LogManager.getLogger(BeforeAfter.class);
+
+    protected Army army;
+    protected Army army1;
+    private IArmyService armyService;
 
     public BeforeAfter() {
+        this.armyService = new ArmyServiceImpl();
+
         this.army = new Army();
         army.setCountry("NEW_ARMY_ONE");
 
@@ -128,78 +135,68 @@ public abstract class BeforeAfter {
 
     @BeforeSuite
     public void armiesCountBeforeSuite() {
-        IArmyService armyService = new ArmyServiceImpl();
-        Integer count = armyService.getCount();
-        System.out.println("Before suite. Armies count = " + count + "\n");
+        Integer count = this.armyService.getCount();
+        LOGGER.info("\nBefore suite. Armies count = " + count + "\n");
     }
 
     @AfterSuite
     public void armiesCountAfterSuite() {
-        IArmyService armyService = new ArmyServiceImpl();
-        Integer count = armyService.getCount();
-        System.out.println("After suite. Armies count = " + count);
+        Integer count = this.armyService.getCount();
+        LOGGER.info("\nAfter suite. Armies count = " + count);
     }
 
     @BeforeTest
     public void armiesCountBeforeTest() {
-        IArmyService armyService = new ArmyServiceImpl();
-        Integer count = armyService.getCount();
-        System.out.println("\tBefore test. Armies count = " + count);
+        Integer count = this.armyService.getCount();
+        LOGGER.info("\n\tBefore test. Armies count = " + count);
     }
 
     @AfterTest
     public void armiesCountAfterTest() {
-        IArmyService armyService = new ArmyServiceImpl();
-        Integer count = armyService.getCount();
-        System.out.println("\tAfter test. Armies count = " + count + "\n");
+        Integer count = this.armyService.getCount();
+        LOGGER.info("\n\tAfter test. Armies count = " + count + "\n");
     }
 
     @BeforeGroups("checkCount")
     public void armiesCountBeforeGroup() {
-        IArmyService armyService = new ArmyServiceImpl();
-        Integer count = armyService.getCount();
-        System.out.println("\tBefore groups. Armies count = " + count);
+        Integer count = this.armyService.getCount();
+        LOGGER.info("\n\tBefore groups. Armies count = " + count);
     }
 
     @AfterGroups("checkCount")
     public void armiesCountAfterGroup() {
-        IArmyService armyService = new ArmyServiceImpl();
-        Integer count = armyService.getCount();
-        System.out.println("\tAfter groups. Armies count = " + count + "\n");
+        Integer count = this.armyService.getCount();
+        LOGGER.info("\n\tAfter groups. Armies count = " + count + "\n");
     }
 
     @BeforeClass
     public void createAllDatabase() {
-        IArmyService armyService = new ArmyServiceImpl();
-        armyService.create(army);
-        armyService.create(army1);
+        this.armyService.create(this.army);
+        this.armyService.create(this.army1);
 
-        Integer count = armyService.getCount();
-        System.out.println("\t\tBefore class. Armies count = " + count + "\n");
+        Integer count = this.armyService.getCount();
+        LOGGER.info("\n\t\tBefore class. Armies count = " + count + "\n");
     }
 
     @AfterClass
     public void deleteAllDatabase() {
-        IArmyService armyService = new ArmyServiceImpl();
-        armyService.delete(this.army);
-        armyService.delete(this.army1);
+        this.armyService.delete(this.army);
+        this.armyService.delete(this.army1);
 
-        Integer count = armyService.getCount();
-        System.out.println("\t\tAfter class. Armies count = " + count);
+        Integer count = this.armyService.getCount();
+        LOGGER.info("\n\t\tAfter class. Armies count = " + count);
     }
 
     @BeforeMethod
     public void armiesCountBeforeMethod() {
-        IArmyService armyService = new ArmyServiceImpl();
-        Integer count = armyService.getCount();
-        System.out.println("\t\t\tBefore method. Armies count = " + count);
+        Integer count = this.armyService.getCount();
+        LOGGER.info("\n\t\t\tBefore method. Armies count = " + count);
     }
 
     @AfterMethod
     public void armiesCountAfterMethod() {
-        IArmyService armyService = new ArmyServiceImpl();
-        Integer count = armyService.getCount();
-        System.out.println("\t\t\tAfter method. Armies count = " + count + "\n");
+        Integer count = this.armyService.getCount();
+        LOGGER.info("\n\t\t\tAfter method. Armies count = " + count + "\n");
     }
 
 }

@@ -10,9 +10,9 @@ public interface ISoldierService {
 
     Soldier createRecruit(Soldier soldier, Long militaryUnitId);
 
-    Soldier updateSoldier(Soldier soldier, Long militaryUnitId);
+    void updateSoldier(Soldier soldier, Long militaryUnitId);
 
-    Soldier updateRecruit(Soldier soldier);
+    void updateRecruit(Soldier soldier);
 
     void delete(Soldier soldier);
 

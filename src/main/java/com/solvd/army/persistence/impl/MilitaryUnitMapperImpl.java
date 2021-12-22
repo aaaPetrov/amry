@@ -43,4 +43,12 @@ public class MilitaryUnitMapperImpl implements IMilitaryUnitRepository {
         }
     }
 
+    @Override
+    public Long getFirstMilitaryUnitId() {
+        try (SqlSession session = SessionHolder.getSqlSessionFactory().openSession(true)) {
+            IMilitaryUnitRepository militaryUnitRepository = session.getMapper(IMilitaryUnitRepository.class);
+            return militaryUnitRepository.getFirstMilitaryUnitId();
+        }
+    }
+
 }

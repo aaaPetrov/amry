@@ -15,4 +15,6 @@ public interface IMilitaryUnitRepository {
 
     Integer getCount();
 
+    Long getFirstMilitaryUnitId();
+
 }

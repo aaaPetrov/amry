@@ -28,7 +28,7 @@
         </classes>
     </test>
 
-    <test name="count" parallel="methods" thread-count="5">
+    <test name="count">
         <groups>
             <run>
                 <include name="checkCount"/>

@@ -9,28 +9,40 @@ import com.solvd.army.service.ISoldierService;
 import com.solvd.army.service.impl.ArmyServiceImpl;
 import com.solvd.army.service.impl.MilitaryUnitServiceImpl;
 import com.solvd.army.service.impl.SoldierServiceImpl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
+
+import java.util.Arrays;
 import java.util.List;
 
 public class ArmyTest extends BeforeAfter {
+
+    private static final Logger LOGGER = LogManager.getLogger(ArmyTest.class);
 
     private List<Army> armies;
 
     @Test(priority = 1)
     public void checkGetArmiesTest() {
         IArmyService armyService = new ArmyServiceImpl();
-        System.out.println("\t\t\t\tcheckGetArmiesTest");
+        LOGGER.info("\n\t\t\t\tcheckGetArmiesTest");
+
+        List<Army> insertedArmies = Arrays.asList(this.army, this.army1);
         List<Army> armies = armyService.getArmyCountries();
         this.armies = armies;
 
         Assert.assertNotNull(armies, "armyCountries is null.");
+        Assert.assertEquals(armies.size(), insertedArmies.size(), "Armies size is not equal.");
+        for(int i = 0; i < armies.size(); i++) {
+            Assert.assertEquals(armies.get(i).getCountry(), insertedArmies.get(i).getCountry(), "Selected army is not equal with inserted army.");
+        }
     }
 
     @Test(priority = 2,  expectedExceptions = { NullPointerException.class, NoDataException.class })
     public void checkDeleteArmiesByCountry() {
-        System.out.println("\t\t\t\tcheckDeleteArmiesByCountry");
+        LOGGER.info("\n\t\t\t\tcheckDeleteArmiesByCountry");
         IArmyService armyService = new ArmyServiceImpl();
         for(Army army : this.armies) {
             Army selectedArmy = armyService.get(army.getCountry());
@@ -45,7 +57,7 @@ public class ArmyTest extends BeforeAfter {
     @Test(priority = 3)
     public void checkInsertArmies() {
         IArmyService armyService = new ArmyServiceImpl();
-        System.out.println("\t\t\t\tcheckInsertArmies");
+        LOGGER.info("\n\t\t\t\tcheckInsertArmies");
         int i = 1;
         for(Army army : this.armies) {
             army.setCountry("CHECK_INSERT" + i);
@@ -61,7 +73,7 @@ public class ArmyTest extends BeforeAfter {
     @Test(priority = 4)
     public void checkUpdateArmies() {
         IArmyService armyService = new ArmyServiceImpl();
-        System.out.println("\t\t\t\tcheckUpdateArmies");
+        LOGGER.info("\n\t\t\t\tcheckUpdateArmies");
         int i = 1;
         for(Army army : this.armies) {
             army.setCountry("CHECK_UPDATE" + i);
@@ -78,7 +90,7 @@ public class ArmyTest extends BeforeAfter {
     @Test(groups = {"checkCount"})
     public void checkArmiesCountTest() {
         IArmyService armyService = new ArmyServiceImpl();
-        System.out.println("\t\t\t\tcheckArmiesCountTest");
+        LOGGER.info("\n\t\t\t\tcheckArmiesCountTest");
         List<Army> armies = armyService.getAll();
         Integer  armiesCountActual = armies.size();
         Integer armiesCount = armyService.getCount();
@@ -93,7 +105,7 @@ public class ArmyTest extends BeforeAfter {
     void checkMilitaryUnitCountTest() {
         IArmyService armyService = new ArmyServiceImpl();
         IMilitaryUnitService militaryUnitService = new MilitaryUnitServiceImpl();
-        System.out.println("\t\t\t\tcheckMilitaryUnitCountTest");
+        LOGGER.info("\n\t\t\t\tcheckMilitaryUnitCountTest");
         List<Army> armies = armyService.getAll();
         Integer militaryUnitsCountActual = 0;
 
@@ -109,7 +121,7 @@ public class ArmyTest extends BeforeAfter {
     public void checkSoldiersCountTest() {
         IArmyService armyService = new ArmyServiceImpl();
         ISoldierService soldierService = new SoldierServiceImpl();
-        System.out.println("\t\t\t\tcheckSoldiersCountTest");
+        LOGGER.info("\n\t\t\t\tcheckSoldiersCountTest");
         List<Army> armies = armyService.getAll();
         Integer soldiersCountActual = 0;
         for(Army army : armies) {

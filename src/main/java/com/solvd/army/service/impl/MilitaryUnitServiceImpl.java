@@ -151,4 +151,9 @@ public class MilitaryUnitServiceImpl implements IMilitaryUnitService {
         return militaryUnitRepository.getCount();
     }
 
+    @Override
+    public Long getFirstMilitaryUnitId() {
+        return militaryUnitRepository.getFirstMilitaryUnitId();
+    }
+
 }
