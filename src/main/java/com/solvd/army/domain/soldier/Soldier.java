@@ -6,7 +6,7 @@ public class Soldier extends Recruit {
 
     public static int count;
 
-    private long id;
+    private Long id;
     private Rank rank;
     private ServiceTerm term;
 
@@ -21,11 +21,11 @@ public class Soldier extends Recruit {
         count++;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

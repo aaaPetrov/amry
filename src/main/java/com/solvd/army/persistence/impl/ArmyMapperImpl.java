@@ -49,4 +49,20 @@ public class ArmyMapperImpl implements IArmyRepository {
         }
     }
 
+    @Override
+    public Integer getCount() {
+        try (SqlSession session = SessionHolder.getSqlSessionFactory().openSession(true)) {
+            IArmyRepository armyRepository = session.getMapper(IArmyRepository.class);
+            return armyRepository.getCount();
+        }
+    }
+
+    @Override
+    public List<Army> getArmyCountries() {
+        try (SqlSession session = SessionHolder.getSqlSessionFactory().openSession(true)) {
+            IArmyRepository armyRepository = session.getMapper(IArmyRepository.class);
+            return armyRepository.getArmyCountries();
+        }
+    }
+
 }

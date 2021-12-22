@@ -18,6 +18,23 @@ import java.util.List;
 
 public class MilitaryUnitRepositoryImpl implements IMilitaryUnitRepository {
 
+
+    @Override
+    public Integer getCount() {
+        Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
+        String sqlCommand = "select count(*) from military_units;";
+        Integer result;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand)) {
+            ResultSet resultSet =  preparedStatement.executeQuery();
+            result = resultSet.getInt(1);
+        } catch (SQLException exception) {
+            throw new ProcessingException(exception.getMessage());
+        } finally {
+            ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
+        }
+        return result;
+    }
+
     @Override
     public List<MilitaryUnit> get(String country) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();

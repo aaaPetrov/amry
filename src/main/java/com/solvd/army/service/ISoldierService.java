@@ -12,10 +12,16 @@ public interface ISoldierService {
 
     Soldier updateSoldier(Soldier soldier, Long militaryUnitId);
 
-    Soldier updateRecruit(Soldier soldier, Long militaryUnitId);
+    Soldier updateRecruit(Soldier soldier);
 
     void delete(Soldier soldier);
 
     List<Soldier> getByMilitaryUnitName(String militaryUnitName);
+
+    Soldier getById(Long id);
+
+    void deleteById(Long id);
+
+    Integer getCount();
 
 }

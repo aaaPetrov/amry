@@ -16,4 +16,8 @@ public interface IArmyRepository {
 
     List<Army> getAll();
 
+    Integer getCount();
+
+    List<Army> getArmyCountries();
+
 }

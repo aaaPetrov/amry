@@ -15,6 +15,14 @@
         delete from armies where country = #{country};
     </delete>
 
+    <select id="getArmyCountries" resultMap="GetArmyResultMap">
+        select id as army_id, country as army_country from armies;
+    </select>
+
+    <select id="getCount" resultType="java.lang.Integer">
+        select count(*) from armies;
+    </select>
+
     <select id="get" resultMap="GetArmyResultMap">
         select
         id as army_id,

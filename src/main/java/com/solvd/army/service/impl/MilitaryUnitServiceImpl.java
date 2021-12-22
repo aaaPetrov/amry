@@ -76,7 +76,7 @@ public class MilitaryUnitServiceImpl implements IMilitaryUnitService {
         }
         if (militaryUnit.getSoldiers() != null) {
             for (Soldier soldier : militaryUnit.getSoldiers()) {
-                soldierService.updateRecruit(soldier, militaryUnit.getId());
+                soldierService.updateRecruit(soldier);
                 soldierService.updateSoldier(soldier, militaryUnit.getId());
             }
         }
@@ -144,6 +144,11 @@ public class MilitaryUnitServiceImpl implements IMilitaryUnitService {
             militaryUnit.setSoldiers(soldiers);
         }
         return militaryUnits;
+    }
+
+    @Override
+    public Integer getCount() {
+        return militaryUnitRepository.getCount();
     }
 
 }

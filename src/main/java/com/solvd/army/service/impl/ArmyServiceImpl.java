@@ -83,4 +83,14 @@ public class ArmyServiceImpl implements IArmyService {
         return armies;
     }
 
+    @Override
+    public Integer getCount() {
+        return armyRepository.getCount();
+    }
+
+    @Override
+    public List<Army> getArmyCountries() {
+        return armyRepository.getArmyCountries();
+    }
+
 }
