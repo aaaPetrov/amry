@@ -22,9 +22,9 @@ public abstract class BeforeAfter {
 
     private static final Logger LOGGER = LogManager.getLogger(BeforeAfter.class);
 
-    protected Army army;
-    protected Army army1;
-    private IArmyService armyService;
+    protected final Army army;
+    protected final Army army1;
+    private final IArmyService armyService;
 
     public BeforeAfter() {
         this.armyService = new ArmyServiceImpl();

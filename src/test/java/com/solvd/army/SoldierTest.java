@@ -21,9 +21,9 @@ public class SoldierTest extends BeforeAfter {
 
     private static final Logger LOGGER = LogManager.getLogger(SoldierTest.class);
 
-    private List<Soldier> soldiers;
-    private ISoldierService soldierService;
-    private IMilitaryUnitService militaryUnitService;
+    private final List<Soldier> soldiers;
+    private final ISoldierService soldierService;
+    private final IMilitaryUnitService militaryUnitService;
 
     public SoldierTest() {
         this.soldiers = new ArrayList<>();

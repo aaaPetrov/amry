@@ -23,14 +23,23 @@ public class ArmyTest extends BeforeAfter {
     private static final Logger LOGGER = LogManager.getLogger(ArmyTest.class);
 
     private List<Army> armies;
+    private final IArmyService armyService;
+    private final IMilitaryUnitService militaryUnitService;
+    private final ISoldierService soldierService;
+
+    public ArmyTest() {
+        this.armyService = new ArmyServiceImpl();
+        this.militaryUnitService = new MilitaryUnitServiceImpl();
+        this.soldierService = new SoldierServiceImpl();
+    }
 
     @Test(priority = 1)
     public void checkGetArmiesTest() {
-        IArmyService armyService = new ArmyServiceImpl();
+
         LOGGER.info("\n\t\t\t\tcheckGetArmiesTest");
 
         List<Army> insertedArmies = Arrays.asList(this.army, this.army1);
-        List<Army> armies = armyService.getArmyCountries();
+        List<Army> armies = this.armyService.getArmyCountries();
         this.armies = armies;
 
         Assert.assertNotNull(armies, "armyCountries is null.");
@@ -43,11 +52,10 @@ public class ArmyTest extends BeforeAfter {
     @Test(priority = 2,  expectedExceptions = { NullPointerException.class, NoDataException.class })
     public void checkDeleteArmiesByCountry() {
         LOGGER.info("\n\t\t\t\tcheckDeleteArmiesByCountry");
-        IArmyService armyService = new ArmyServiceImpl();
         for(Army army : this.armies) {
-            Army selectedArmy = armyService.get(army.getCountry());
-            armyService.delete(army);
-            Army armyAfterDelete = armyService.get(army.getCountry());
+            Army selectedArmy = this.armyService.get(army.getCountry());
+            this.armyService.delete(army);
+            Army armyAfterDelete = this.armyService.get(army.getCountry());
 
             Assert.assertNotNull(selectedArmy, "selectedArmy is null.");
             Assert.assertNull(armyAfterDelete, "army wasn't deleted.");
@@ -56,13 +64,12 @@ public class ArmyTest extends BeforeAfter {
 
     @Test(priority = 3)
     public void checkInsertArmies() {
-        IArmyService armyService = new ArmyServiceImpl();
         LOGGER.info("\n\t\t\t\tcheckInsertArmies");
         int i = 1;
         for(Army army : this.armies) {
             army.setCountry("CHECK_INSERT" + i);
-            armyService.create(army);
-            Army insertedArmy = armyService.get(army.getCountry());
+            this.armyService.create(army);
+            Army insertedArmy = this.armyService.get(army.getCountry());
 
             Assert.assertNotNull(army.getId(), "army id is null.");
             Assert.assertNotNull(insertedArmy, "army wasn't inserted.");
@@ -72,14 +79,13 @@ public class ArmyTest extends BeforeAfter {
 
     @Test(priority = 4)
     public void checkUpdateArmies() {
-        IArmyService armyService = new ArmyServiceImpl();
         LOGGER.info("\n\t\t\t\tcheckUpdateArmies");
         int i = 1;
         for(Army army : this.armies) {
             army.setCountry("CHECK_UPDATE" + i);
-            armyService.update(army);
-            Army updatedArmy = armyService.get(army.getCountry());
-            armyService.delete(army);
+            this.armyService.update(army);
+            Army updatedArmy = this.armyService.get(army.getCountry());
+            this.armyService.delete(army);
 
             Assert.assertNotNull(updatedArmy, "Army wasn't updated.");
             i++;
@@ -89,11 +95,10 @@ public class ArmyTest extends BeforeAfter {
 
     @Test(groups = {"checkCount"})
     public void checkArmiesCountTest() {
-        IArmyService armyService = new ArmyServiceImpl();
         LOGGER.info("\n\t\t\t\tcheckArmiesCountTest");
-        List<Army> armies = armyService.getAll();
+        List<Army> armies = this.armyService.getAll();
         Integer  armiesCountActual = armies.size();
-        Integer armiesCount = armyService.getCount();
+        Integer armiesCount = this.armyService.getCount();
 
         SoftAssert softAssert = new SoftAssert();
         softAssert.assertNotNull(armies, "armies(List<Army>) is null.");
@@ -103,26 +108,22 @@ public class ArmyTest extends BeforeAfter {
 
     @Test(groups = {"checkCount"})
     void checkMilitaryUnitCountTest() {
-        IArmyService armyService = new ArmyServiceImpl();
-        IMilitaryUnitService militaryUnitService = new MilitaryUnitServiceImpl();
         LOGGER.info("\n\t\t\t\tcheckMilitaryUnitCountTest");
-        List<Army> armies = armyService.getAll();
+        List<Army> armies = this.armyService.getAll();
         Integer militaryUnitsCountActual = 0;
 
         for(Army army : armies) {
             militaryUnitsCountActual += army.getMilitaryUnits().size();
         }
 
-        Integer militaryUnitsCount = militaryUnitService.getCount();
+        Integer militaryUnitsCount = this.militaryUnitService.getCount();
         Assert.assertEquals((militaryUnitsCountActual), militaryUnitsCount, "The count of military units isn't equal.");
     }
 
     @Test(groups = {"checkCount"})
     public void checkSoldiersCountTest() {
-        IArmyService armyService = new ArmyServiceImpl();
-        ISoldierService soldierService = new SoldierServiceImpl();
         LOGGER.info("\n\t\t\t\tcheckSoldiersCountTest");
-        List<Army> armies = armyService.getAll();
+        List<Army> armies = this.armyService.getAll();
         Integer soldiersCountActual = 0;
         for(Army army : armies) {
             for(MilitaryUnit militaryUnit : army.getMilitaryUnits()) {
@@ -130,7 +131,7 @@ public class ArmyTest extends BeforeAfter {
             }
         }
 
-        Integer soldiersCount = soldierService.getCount();
+        Integer soldiersCount = this.soldierService.getCount();
         Assert.assertEquals(soldiersCountActual, soldiersCount, "The count of soldiers isn't equal.");
     }
 
