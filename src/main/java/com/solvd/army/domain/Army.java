@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Army {
 
-    private long id;
+    private Long id;
     private String country;
     private List<MilitaryUnit> militaryUnits;
 

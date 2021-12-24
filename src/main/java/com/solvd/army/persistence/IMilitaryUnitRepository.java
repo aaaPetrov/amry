@@ -13,4 +13,8 @@ public interface IMilitaryUnitRepository {
 
     List<MilitaryUnit> get(String country);
 
+    Integer getCount();
+
+    Long getFirstMilitaryUnitId();
+
 }

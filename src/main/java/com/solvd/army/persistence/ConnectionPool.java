@@ -1,6 +1,8 @@
 package com.solvd.army.persistence;
 
 
+import com.solvd.army.domain.exception.ProcessingException;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -20,7 +22,6 @@ public class ConnectionPool {
 
     private ConnectionPool(int sizeOfPool) {
         this.connections = new ArrayList<>();
-        classForName(Config.JDBC_DRIVER);
         IntStream.range(0, sizeOfPool).boxed()
                 .forEach(index -> {
                     Connection connection = getConnection(Config.URL, Config.USER, Config.PASSWORD);
@@ -63,18 +64,19 @@ public class ConnectionPool {
         Class<?> classResult = null;
         try {
             classResult = Class.forName(className);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (ClassNotFoundException exception) {
+            throw new ProcessingException("Cant load JDBC driver. " + exception.getMessage());
         }
         return classResult;
     }
 
     private static Connection getConnection(String url, String user, String password) {
+        classForName(Config.JDBC_DRIVER);
         Connection connection = null;
         try {
             connection = DriverManager.getConnection(url, user, password);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException exception) {
+            throw new ProcessingException("Cant get JDBC connection. " + exception.getMessage());
         }
         return connection;
     }

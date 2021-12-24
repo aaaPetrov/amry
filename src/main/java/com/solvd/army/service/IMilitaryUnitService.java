@@ -12,4 +12,8 @@ public interface IMilitaryUnitService {
 
     List<MilitaryUnit> get(String country);
 
+    Integer getCount();
+
+    Long getFirstMilitaryUnitId();
+
 }

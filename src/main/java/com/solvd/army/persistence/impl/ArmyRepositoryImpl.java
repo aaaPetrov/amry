@@ -15,6 +15,46 @@ public class ArmyRepositoryImpl implements IArmyRepository {
     private final static String SELECT_ALL = SELECT_ALL();
 
     @Override
+    public List<Army> getArmyCountries() {
+        Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
+        String sqlCommand = "select id, country from armies;";
+        List<Army> armies = new ArrayList<>();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand)) {
+            ResultSet resultSet =  preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Long id = resultSet.getLong(1);
+                String country = resultSet.getString("country");
+
+                Army army = new Army();
+                army.setId(id);
+                army.setCountry(country);
+                armies.add(army);
+            }
+        } catch (SQLException exception) {
+            throw new ProcessingException(exception.getMessage());
+        } finally {
+            ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
+        }
+        return armies;
+    }
+
+    @Override
+    public Integer getCount() {
+        Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
+        String sqlCommand = "select count(*) from armies;";
+        Integer result;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand)) {
+            ResultSet resultSet =  preparedStatement.executeQuery();
+            result = resultSet.getInt(1);
+        } catch (SQLException exception) {
+            throw new ProcessingException(exception.getMessage());
+        } finally {
+            ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
+        }
+        return result;
+    }
+
+    @Override
     public void update(Army army) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommand = "update armies set country = ? where id = ?;";

@@ -45,15 +45,29 @@ public class SoldierServiceImpl implements ISoldierService {
     }
 
     @Override
-    public Soldier updateSoldier(Soldier soldier, Long militaryUnitId) {
+    public void updateSoldier(Soldier soldier, Long militaryUnitId) {
         soldierRepository.updateSoldier(soldier, militaryUnitId);
+    }
+
+    @Override
+    public void updateRecruit(Soldier soldier) {
+        soldierRepository.updateRecruit(soldier);
+    }
+
+    @Override
+    public Soldier getById(Long id) {
+        Soldier soldier = soldierRepository.getById(id);
         return soldier;
     }
 
     @Override
-    public Soldier updateRecruit(Soldier soldier, Long militaryUnitId) {
-        soldierRepository.updateRecruit(soldier, militaryUnitId);
-        return soldier;
+    public void deleteById(Long id) {
+        soldierRepository.deleteById(id);
+    }
+
+    @Override
+    public Integer getCount() {
+        return soldierRepository.getCount();
     }
 
 }

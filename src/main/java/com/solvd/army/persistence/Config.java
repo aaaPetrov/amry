@@ -20,7 +20,7 @@ public final class Config {
     }
 
     private static String getValueFromConfig(String forVariable) {
-        File fromFile = new File("./config.properties");
+        File fromFile = new File("config.properties");
         String value = null;
         try {
             InputStream inputStream = Files.newInputStream(Paths.get("./src/main/resources/config.properties"));

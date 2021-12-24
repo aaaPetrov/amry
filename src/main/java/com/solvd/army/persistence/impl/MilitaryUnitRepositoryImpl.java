@@ -19,6 +19,40 @@ import java.util.List;
 public class MilitaryUnitRepositoryImpl implements IMilitaryUnitRepository {
 
     @Override
+    public Long getFirstMilitaryUnitId() {
+        Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
+        String sqlCommand = "select id from military_units limit 1;";
+        Long id = null;
+        try(PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()) {
+                id = resultSet.getLong(1);
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        } finally {
+            ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
+        }
+        return id;
+    }
+
+    @Override
+    public Integer getCount() {
+        Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
+        String sqlCommand = "select count(*) from military_units;";
+        Integer result;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand)) {
+            ResultSet resultSet =  preparedStatement.executeQuery();
+            result = resultSet.getInt(1);
+        } catch (SQLException exception) {
+            throw new ProcessingException(exception.getMessage());
+        } finally {
+            ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
+        }
+        return result;
+    }
+
+    @Override
     public List<MilitaryUnit> get(String country) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommand = "select MU.id as military_unit_id, MU.army_id, MU.name, MU.longitude, MU.latitude from military_units as MU where army_id = "

@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface IArmyService {
 
-    Army update(Army army);
+    void update(Army army);
 
     void delete(Army army);
 
@@ -15,5 +15,9 @@ public interface IArmyService {
     Army get(String country);
 
     List<Army> getAll();
+
+    Integer getCount();
+
+    List<Army> getArmyCountries();
 
 }

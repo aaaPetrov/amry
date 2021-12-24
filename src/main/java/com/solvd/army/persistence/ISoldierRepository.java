@@ -13,10 +13,16 @@ public interface ISoldierRepository {
 
     void updateSoldier(@Param("soldier") Soldier soldier, @Param("militaryUnitId") Long militaryUnitId);
 
-    void updateRecruit(@Param("soldier") Soldier soldier, @Param("militaryUnitId") Long militaryUnitId);
+    void updateRecruit(@Param("soldier") Soldier soldier);
 
     void delete(Soldier soldier);
 
     List<Soldier> getByMilitaryUnitName(String militaryUnitName);
+
+    Soldier getById(Long id);
+
+    void deleteById(Long id);
+
+    Integer getCount();
 
 }

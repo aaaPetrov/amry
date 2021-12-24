@@ -1,0 +1,42 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="database">
+
+    <test name="soldier">
+        <classes>
+            <class name="com.solvd.army.SoldierTest">
+                <methods>
+                    <include name="checkCreateSoldierTest"/>
+                    <include name="checkUpdateSoldierTest"/>
+                    <include name="checkDeleteSoldierTest"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="army">
+        <classes>
+            <class name="com.solvd.army.ArmyTest">
+                <methods>
+                    <include name="checkGetArmiesTest"/>
+                    <include name="checkDeleteArmiesByCountry"/>
+                    <include name="checkInsertArmies"/>
+                    <include name="checkUpdateArmies"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="count">
+        <groups>
+            <run>
+                <include name="checkCount"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.solvd.army.ArmyTest"/>
+        </classes>
+    </test>
+
+</suite>

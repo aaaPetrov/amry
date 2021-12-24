@@ -15,13 +15,76 @@ import java.util.List;
 
 public class SoldierRepositoryImpl implements ISoldierRepository {
 
-    private final static String SQL_COMMAND = SELECT_COMMAND();
+    private final static String SQL_COMMAND_getByMilitaryUnitName = SELECT_COMMAND_getByMilitaryUnitName();
+    private final static String SQL_COMMAND_getById = SELECT_COMMAND_getById();
+
+
+    @Override
+    public Integer getCount() {
+        Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
+        String sqlCommand = "select count(*) from soldiers;";
+        Integer result;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand)) {
+            ResultSet resultSet =  preparedStatement.executeQuery();
+            result = resultSet.getInt(1);
+        } catch (SQLException exception) {
+            throw new ProcessingException(exception.getMessage());
+        } finally {
+            ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
+        }
+        return result;
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
+        String sqlCommand = "delete from recruits where id = ?;";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlCommand)) {
+            preparedStatement.setLong(1, id);
+            preparedStatement.executeUpdate();
+        } catch (SQLException exception) {
+            throw new ProcessingException(exception.getMessage());
+        } finally {
+            ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
+        }
+    }
+
+    @Override
+    public Soldier getById(Long id) {
+        Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
+        Soldier soldier = new Soldier();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_COMMAND_getById)) {
+            preparedStatement.setLong(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                Soldier.Rank rankType = Soldier.Rank.valueOf(resultSet.getString("type"));
+                soldier.setId(resultSet.getLong("soldier_id"));
+                soldier.setRank(rankType);
+                soldier.setFirstName(resultSet.getString("first_name"));
+                soldier.setLastName(resultSet.getString("last_name"));
+                LocalDate birthday = resultSet.getDate("birthday").toLocalDate();
+                soldier.setBirthday(birthday);
+                int age = (int) ChronoUnit.YEARS.between(birthday, LocalDate.now());
+                soldier.setAge(age);
+                ServiceTerm serviceTerm = new ServiceTerm();
+                serviceTerm.setEntered(resultSet.getDate("entered_the_service").toLocalDate());
+                serviceTerm.setEnd(resultSet.getDate("end_of_service").toLocalDate());
+                soldier.setTerm(serviceTerm);
+            }
+        } catch (SQLException exception) {
+            throw new ProcessingException(exception.getMessage());
+        } finally {
+            ConnectionPool.CONNECTION_POOL.releaseConnection(connection);
+        }
+        return soldier;
+    }
 
     @Override
     public List<Soldier> getByMilitaryUnitName(String militaryUnitName) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         List<Soldier> soldiers = new ArrayList<>();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_COMMAND)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_COMMAND_getByMilitaryUnitName)) {
             preparedStatement.setString(1, militaryUnitName);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -51,7 +114,7 @@ public class SoldierRepositoryImpl implements ISoldierRepository {
     }
 
     @Override
-    public void updateRecruit(Soldier soldier, Long militaryUnitId) {
+    public void updateRecruit(Soldier soldier) {
         Connection connection = ConnectionPool.CONNECTION_POOL.getConnection();
         String sqlCommandRecruit = "update recruits set first_name = ?, last_name = ?, birthday = ? where id = "
                 + "(select recruit_id from soldiers where id = ?);";
@@ -199,12 +262,20 @@ public class SoldierRepositoryImpl implements ISoldierRepository {
         return result;
     }
 
-    private static String SELECT_COMMAND() {
+    private static String SELECT_COMMAND_getByMilitaryUnitName() {
         return "select S.id as soldier_id, S.recruit_id, S.rank_id, S.military_unit_id, R.type, REC.first_name, REC.last_name, REC.birthday, S.entered_the_service, S.end_of_service "
                 + "from soldiers as S "
                 + "inner join recruits as REC on S.recruit_id = REC.id "
                 + "inner join ranks as R on S.rank_id = R.id "
                 + "where S.military_unit_id = (select id from military_units where name = ?);";
+    }
+
+    private static String SELECT_COMMAND_getById() {
+        return "select S.id as soldier_id, S.recruit_id, S.rank_id, S.military_unit_id, R.type, REC.first_name, REC.last_name, REC.birthday, S.entered_the_service, S.end_of_service "
+                + "from soldiers as S "
+                + "inner join recruits as REC on S.recruit_id = REC.id "
+                + "inner join ranks as R on S.rank_id = R.id "
+                + "where s.id = ?";
     }
 
 }

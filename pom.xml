@@ -13,13 +13,35 @@
         <javaVersion>1.8</javaVersion>
         <mySqlConnectorVersion>8.0.27</mySqlConnectorVersion>
         <myBatisVersion>3.5.7</myBatisVersion>
+        <testNgVersion>7.4.0</testNgVersion>
+        <mavenSurfirePluginVersion>3.0.0-M5</mavenSurfirePluginVersion>
+        <log4jversion>2.17.0</log4jversion>
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4jversion}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4jversion}</version>
+        </dependency>
+
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>${mySqlConnectorVersion}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testNgVersion}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -31,6 +53,7 @@
 
     <build>
         <plugins>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -40,6 +63,20 @@
                     <target>${javaVersion}</target>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${mavenSurfirePluginVersion}</version>
+                <configuration>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>src/test/resources/testng-suites/database.xml</suiteXmlFile>
+                    </suiteXmlFiles>
+                    <parallel>classes</parallel>
+                    <threadCount>5</threadCount>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 

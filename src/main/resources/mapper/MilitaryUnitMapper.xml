@@ -14,6 +14,14 @@
         where army_id = #{armyId} and id = #{militaryUnit.id};
     </update>
 
+    <select id="getFirstMilitaryUnitId" resultType="java.lang.Long">
+        select id from military_units limit 1;
+    </select>
+
+    <select id="getCount" resultType="java.lang.Integer">
+        select count(*) from military_units;
+    </select>
+
     <select id="get" resultMap="GetMilitaryUnitsResultMap">
         select
         MU.id as military_unit_id,
@@ -42,8 +50,7 @@
         <collection property="weapons" resultMap="com.solvd.army.persistence.IWeaponRepository.GetAllWeaponsResultMap"/>
         <collection property="tanks" resultMap="com.solvd.army.persistence.ITankRepository.GetAllTanksResultMap"/>
         <collection property="planes" resultMap="com.solvd.army.persistence.IPlaneRepository.GetAllPlanesResultMap"/>
-        <collection property="soldiers"
-                    resultMap="com.solvd.army.persistence.ISoldierRepository.GetAllSoldiersResultMap"/>
+        <collection property="soldiers" resultMap="com.solvd.army.persistence.ISoldierRepository.GetAllSoldiersResultMap"/>
     </resultMap>
 
     <sql id="SelectColumns">

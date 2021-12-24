@@ -29,6 +29,32 @@
         delete from recruits where first_name = #{firstName} and last_name = #{lastName};
     </delete>
 
+    <delete id="deleteById">
+        delete from recruits where id = #{id};
+    </delete>
+
+    <select id="getCount" resultType="java.lang.Integer">
+        select count(*) from soldiers;
+    </select>
+
+    <select id="getById" resultMap="GetSoldiersResultMap">
+        select
+        S.id as soldier_id,
+        S.recruit_id as soldier_recruit_id,
+        S.rank_id as soldier_rank_id,
+        S.military_unit_id as soldier_military_unit_id,
+        R.type as rank_type,
+        REC.first_name as recruit_first_name,
+        REC.last_name as recruit_last_name,
+        REC.birthday as recruit_birthday,
+        S.entered_the_service as soldier_entered_the_service,
+        S.end_of_service as soldier_end_of_service
+        from soldiers as S
+        inner join recruits as REC on S.recruit_id = REC.id
+        inner join ranks as R on S.rank_id = R.id
+        where s.id = #{id}
+    </select>
+
     <select id="getByMilitaryUnitName" resultMap="GetSoldiersResultMap">
         select
         S.id as soldier_id,
